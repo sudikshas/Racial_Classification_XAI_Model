@@ -262,6 +262,7 @@ model.compile(optimizer=opt,
                   'race_output': 'accuracy',
                   'gender_output': 'accuracy'})
 
+from keras.callbacks import ModelCheckpoint
 
 callbacks = [
     ModelCheckpoint(filepath="./model_checkpoint/cp-{epoch:04d}.ckpt",
