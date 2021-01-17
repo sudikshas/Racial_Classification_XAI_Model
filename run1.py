@@ -263,6 +263,10 @@ model.compile(optimizer=opt,
                   'gender_output': 'accuracy'})
 
 from keras.callbacks import ModelCheckpoint
+batch_size = 32
+valid_batch_size = 32
+train_gen = data_generator.generate_images(train_idx, is_training=True, batch_size=batch_size)
+valid_gen = data_generator.generate_images(valid_idx, is_training=True, batch_size=valid_batch_size)
 
 callbacks = [
     ModelCheckpoint(filepath="./model_checkpoint/cp-{epoch:04d}.ckpt",
