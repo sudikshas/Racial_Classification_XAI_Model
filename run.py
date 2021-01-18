@@ -20,11 +20,16 @@ dataset_dict = {
         4: 'Middle Eastern',
         5: 'Latino_Hispanic',
         6: 'Southeast Asian'
+    },
+    'gender_id': {
+        0: 'Male',
+        1: 'Female'
     }
 }
 
-
+dataset_dict['gender_alias'] = dict((g, i) for i, g in dataset_dict['gender_id'].items())
 dataset_dict['race_alias'] = dict((g, i) for i, g in dataset_dict['race_id'].items())
+
 
 dataset_folder_name = '../fairface_data' 
 dataset_csv = '/fairface_label_train.csv'
@@ -33,6 +38,7 @@ dataset = pd.read_csv(dataset_folder_name + dataset_csv)
 dataset["file"] = dataset["file"].apply(
     lambda x:"../fairface_data/fairface_pad025/"+x)
 
+#Data Generator
 from keras.utils import to_categorical
 from PIL import Image
 
@@ -53,7 +59,7 @@ class FaceDataGenerator():
         train_idx, valid_idx = train_idx[:train_up_to], train_idx[train_up_to:]
         
         # converts alias to id
-        #self.df['gender_id'] = self.df['gender'].map(lambda gender: dataset_dict['gender_alias'][gender])
+        self.df['gender_id'] = self.df['gender'].map(lambda gender: dataset_dict['gender_alias'][gender])
         self.df['race_id'] = self.df['race'].map(lambda race: dataset_dict['race_alias'][race])
 
         #self.max_age = self.df['age'].max()
@@ -77,36 +83,37 @@ class FaceDataGenerator():
         
         # arrays to store our batched data
         images, ages, races, genders = [], [], [], []
+        #images, races = [], []
         while True:
             for idx in image_idx:
                 person = self.df.iloc[idx]
                 
                 #age = person['age']
                 race = person['race_id']
-                #gender = person['gender_id']
+                gender = person['gender_id']
                 file = person['file']
                 
                 im = self.preprocess_image(file)
+                #print("im_size: ", im.shape)
                 
                 #ages.append(age / self.max_age)
-                #ages.append(0)
+                ages.append(0)
                 races.append(to_categorical(race, len(dataset_dict['race_id'])))
-                #genders.append(to_categorical(gender, len(dataset_dict['gender_id'])))
+                genders.append(to_categorical(gender, len(dataset_dict['gender_id'])))
                 images.append(im)
                 
                 # yielding condition
                 if len(images) >= batch_size:
-                    #yield np.array(images), [np.array(ages), np.array(races), np.array(genders)]
-                    yield np.array(images), [np.array(races)]
-                    #images, ages, races, genders = [], [], [], []
-                    images, races = [], []
+                    yield np.array(images), [np.array(ages), np.array(races), np.array(genders)]
+                    #yield np.array(images), np.array(races)
+                    images, ages, races, genders = [], [], [], []
+                    #images, races = [], []
                     
             if not is_training:
                 break
                 
 data_generator = FaceDataGenerator(dataset)
 train_idx, valid_idx, test_idx = data_generator.generate_split_indexes()
-
 
 from keras.models import Model
 from keras.layers.normalization import BatchNormalization
@@ -217,21 +224,21 @@ class MultiOutputModel():
 
         inputs = Input(shape=input_shape)
 
-        #age_branch = self.build_age_branch(inputs)
+        age_branch = self.build_age_branch(inputs)
         race_branch = self.build_race_branch(inputs, num_races)
-        #gender_branch = self.build_gender_branch(inputs)
+        #print(race_branch.shape)
+        gender_branch = self.build_gender_branch(inputs)
 
-#         model = Model(inputs=inputs,
-#                      outputs = [age_branch, race_branch, gender_branch],
-#                      name="face_net")
         model = Model(inputs=inputs,
-                     outputs = [race_branch],
+                     outputs = [age_branch, race_branch, gender_branch],
                      name="face_net")
+#         model = Model(inputs=inputs,
+#                      outputs = [race_branch],
+#                      name="face_net")
 
         return model
     
 model = MultiOutputModel().assemble_full_model(IM_WIDTH, IM_HEIGHT, num_races=len(dataset_dict['race_alias']))
-
 
 
 from keras.optimizers import Adam
@@ -249,18 +256,19 @@ model.compile(optimizer=opt,
               metrics={
                   'race_output': 'accuracy'})
 
-
-
 from keras.callbacks import ModelCheckpoint
-
 batch_size = 32
 valid_batch_size = 32
-
 train_gen = data_generator.generate_images(train_idx, is_training=True, batch_size=batch_size)
 valid_gen = data_generator.generate_images(valid_idx, is_training=True, batch_size=valid_batch_size)
 
 callbacks = [
-    ModelCheckpoint(filepath="./model_checkpoint/cp-{epoch:04d}.ckpt", save_weights_only = True, monitor='val_loss', mode = "min")
+    ModelCheckpoint(filepath="./model_checkpoint/race-cp-{epoch:04d}.h5",
+                    save_weights_only = False,
+                    monitor='val_loss',
+                    verbose = 1,
+                    save_best_only=True,
+                    mode = "min")
 ]
 
 history = model.fit_generator(train_gen,
@@ -271,6 +279,4 @@ history = model.fit_generator(train_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
 
 
-
-
-
+history.save('racial_classification_model.h5')
