@@ -31,6 +31,8 @@ from tensorflow import keras
 import tensorflow as tf
 import numpy as np
 
+TRAIN_TEST_SPLIT = 0.7
+IM_WIDTH = IM_HEIGHT = 198
 
 data_path = '../data/raw/'
 image_dir = os.path.join(data_path, 'fairface_pad025')
@@ -39,31 +41,8 @@ train_csv = pd.read_csv(os.path.join(data_path, 'fairface_label_train.csv'))
 val_csv = pd.read_csv(os.path.join(data_path, 'fairface_label_val.csv'))
 df = pd.concat([train_csv, val_csv])
 
-def mean_ages(x):
-    '''
-    Convert age column to average age.
-    '''
-    if x == "more than 70":
-        return 70
-    else:
-        return np.mean([int(y) for y in x.split('-')])
-
-df["age"] = df["age"].apply(mean_ages)
-
-
-TRAIN_TEST_SPLIT = 0.7
-IM_WIDTH = IM_HEIGHT = 198
 
 dataset_dict = {
-    'race_id': {
-        0: 'White', 
-        1: 'Black', 
-        2: 'East Asian', 
-        3: 'Indian', 
-        4: 'Middle Eastern',
-        5: 'Latino_Hispanic',
-        6: 'Southeast Asian'
-    },
     'gender_id': {
         0: 'Male',
         1: 'Female'
@@ -71,32 +50,8 @@ dataset_dict = {
 }
 
 dataset_dict['gender_alias'] = dict((g, i) for i, g in dataset_dict['gender_id'].items())
-dataset_dict['race_alias'] = dict((g, i) for i, g in dataset_dict['race_id'].items())
 
 ### Preprocess Images
-
-
-TRAIN_TEST_SPLIT = 0.7
-IM_WIDTH = IM_HEIGHT = 198
-
-dataset_dict = {
-    'race_id': {
-        0: 'White', 
-        1: 'Black', 
-        2: 'East Asian', 
-        3: 'Indian', 
-        4: 'Middle Eastern',
-        5: 'Latino_Hispanic',
-        6: 'Southeast Asian'
-    },
-    'gender_id': {
-        0: 'Male',
-        1: 'Female'
-    }
-}
-
-dataset_dict['gender_alias'] = dict((g, i) for i, g in dataset_dict['gender_id'].items())
-dataset_dict['race_alias'] = dict((g, i) for i, g in dataset_dict['race_id'].items())
 
 class FFFaceDataGenerator():
     """
@@ -116,9 +71,9 @@ class FFFaceDataGenerator():
         
         # converts alias to id
         self.df['gender_id'] = self.df['gender'].map(lambda gender: dataset_dict['gender_alias'][gender])
-        self.df['race_id'] = self.df['race'].map(lambda race: dataset_dict['race_alias'][race])
+#         self.df['race_id'] = self.df['race'].map(lambda race: dataset_dict['race_alias'][race])
 
-        self.max_age = self.df['age'].max()
+#         self.max_age = self.df['age'].max()
         
         return train_idx, valid_idx, test_idx
     
@@ -138,30 +93,28 @@ class FFFaceDataGenerator():
         """
         
         # arrays to store our batched data
-        images, ages, races, genders = [], [], [], []
+        images, genders = [], []
         while True:
             for idx in image_idx:
                 person = self.df.iloc[idx]
                 
-                age = person['age']
-                race = person['race_id']
                 gender = person['gender_id']
                 file = os.path.join(image_dir, person['file'])
                 
                 im = self.preprocess_image(file)
                 
-                ages.append(age / self.max_age)
-                races.append(to_categorical(race, len(dataset_dict['race_id'])))
                 genders.append(to_categorical(gender, len(dataset_dict['gender_id'])))
                 images.append(im)
                 
                 # yielding condition
                 if len(images) >= batch_size:
-                    yield np.array(images), [np.array(ages), np.array(races), np.array(genders)]
-                    images, ages, races, genders = [], [], [], []
+                    yield np.array(images), np.array(genders)
+                    images, genders = [], []
                     
             if not is_training:
                 break
+    def return_df(self):
+        return self.df
                 
 data_generator = FFFaceDataGenerator(df)
 train_idx, valid_idx, test_idx = data_generator.generate_split_indexes()
@@ -190,4 +143,4 @@ history = model.fit_generator(train_gen,
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
 
-history.save('gender_model.hdf5')
+
