@@ -246,6 +246,7 @@ from keras.optimizers import Adam
 init_lr = 1e-4
 epochs = 100
 
+
 opt = Adam(lr=init_lr, decay=init_lr / epochs)
 
 model.compile(optimizer=opt, 
@@ -259,6 +260,8 @@ model.compile(optimizer=opt,
 from keras.callbacks import ModelCheckpoint
 batch_size = 32
 valid_batch_size = 32
+# batch_size = 128
+# valid_batch_size = 128
 train_gen = data_generator.generate_images(train_idx, is_training=True, batch_size=batch_size)
 valid_gen = data_generator.generate_images(valid_idx, is_training=True, batch_size=valid_batch_size)
 
@@ -267,7 +270,7 @@ callbacks = [
                     save_weights_only = False,
                     monitor='val_loss',
                     verbose = 1,
-                    save_best_only=True,
+                    save_best_only=False,
                     mode = "min")
 ]
 
@@ -278,5 +281,8 @@ history = model.fit_generator(train_gen,
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
 
+model.save('racial_classification_model.h5')
 
-history.save('racial_classification_model.h5')
+
+
+
