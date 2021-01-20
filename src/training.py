@@ -1,0 +1,46 @@
+import os
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
+from tensorflow.keras.optimizers import Adam
+
+def training(model, data_generator, train_batch_size, 
+          valid_batch_size, lr, epochs, save_path):
+    
+    train_idx, valid_idx, test_idx = data_generator.generate_split_indexes()
+    train_generator = data_generator.generate_images(train_idx, is_training=True, batch_size=train_batch_size)
+    valid_generator = data_generator.generate_images(valid_idx, is_training=True, batch_size=valid_batch_size)
+
+    init_lr = lr
+    epochs = epochs
+
+    optimizer = Adam(lr=init_lr, decay=init_lr / epochs)
+
+    model.compile(optimizer=optimizer, 
+                  loss= 'categorical_crossentropy', 
+                  metrics= ["accuracy"])
+
+    sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
+
+    callbacks = [
+        ModelCheckpoint(
+                        filepath = save_path,
+                        save_weights_only = True,
+                        save_best_only = True,
+                        monitor='val_loss',
+                        mode = "min"),
+
+        EarlyStopping(monitor = "val_loss",
+                      patience = 10,
+                      mode = "min")
+        ]
+
+    history = model.fit_generator(train_generator,
+                        steps_per_epoch=len(train_idx)//train_batch_size,
+                        epochs=epochs,
+                        callbacks=callbacks,
+                        validation_data=valid_generator,
+                        validation_steps=len(valid_idx)//valid_batch_size)
+    
+    return history
+    

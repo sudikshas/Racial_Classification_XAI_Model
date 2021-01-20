@@ -1,0 +1,14 @@
+{"load_data":{
+    "train_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_train.csv",
+    "train_image_path":  "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/train",
+    "resize": 198,
+    "TRAIN_TEST_SPLIT": 0.7
+    },
+ "model_param":{
+     "lr": 1e-4,
+     "epochs": 100,
+     "train_batch_size": 32,
+     "valid_batch_size":32,
+     "save_path": "./models/age_model_2/cp-{epoch:04d}.ckpt"
+ }
+}
