@@ -12,7 +12,6 @@ import json
 
 
 if __name__ == '__main__':
-    
     ###load parameters
     with open("./config/age_parameters.json") as param:
         data = json.load(param)
@@ -29,10 +28,11 @@ if __name__ == '__main__':
     IM_WIDTH = IM_HEIGHT = data_info["resize"]
 
     ###preparing data and model
-    data_generator = make_generator(**data_info)   
+    data_generator = make_generator(**data_info)
     model = OutputModel().assemble_full_model(IM_WIDTH, IM_HEIGHT)
     
     ###training
+    
     training(model, data_generator, train_batch_size, valid_batch_size, lr, epochs, save_path)
 
 

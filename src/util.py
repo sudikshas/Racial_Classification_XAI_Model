@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from tensorflow import keras
 from tensorflow.keras.utils import to_categorical
-from PIL import Image
 import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPooling2D, Flatten
@@ -103,4 +102,14 @@ def make_generator(train_label_path, train_image_path, resize, TRAIN_TEST_SPLIT)
     dataset_dict['age_alias'] = dict((g, i) for i, g in dataset_dict['age_id'].items())
     
     return DataGenerator(working, TRAIN_TEST_SPLIT, dataset_dict, resize)
+
+def preprocess_image(img_path, width, height):
+        """
+        Used to perform some minor preprocessing on the image before inputting into the network.
+        """
+        im = Image.open(img_path)
+        im = im.resize((width, height))
+        im = np.array(im) / 255.0
+        
+        return im
     

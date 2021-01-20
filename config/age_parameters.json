@@ -9,6 +9,6 @@
      "epochs": 100,
      "train_batch_size": 32,
      "valid_batch_size":32,
-     "save_path": "./models/age_model_2/cp-{epoch:04d}.ckpt"
+     "save_path": "./models/age_model_2/cp-{epoch:04d}.hdf5"
  }
 }
