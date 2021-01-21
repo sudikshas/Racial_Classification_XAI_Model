@@ -265,13 +265,23 @@ valid_batch_size = 32
 train_gen = data_generator.generate_images(train_idx, is_training=True, batch_size=batch_size)
 valid_gen = data_generator.generate_images(valid_idx, is_training=True, batch_size=valid_batch_size)
 
+# callbacks = [
+#     ModelCheckpoint(filepath="./model_checkpoint/race-cp-{epoch:04d}.h5",
+#                     save_weights_only = False,
+#                     monitor='val_loss',
+#                     verbose = 1,
+#                     save_best_only=False,
+#                     mode = "min")
+# ]
+
 callbacks = [
-    ModelCheckpoint(filepath="./model_checkpoint/race-cp-{epoch:04d}.h5",
-                    save_weights_only = False,
-                    monitor='val_loss',
-                    verbose = 1,
-                    save_best_only=False,
-                    mode = "min")
+    ModelCheckpoint("../model_checkpoint/gender-cp-{epoch:04d}.hdf5", 
+    monitor='val_loss', 
+    verbose=1, 
+    save_best_only=True, 
+    save_weights_only=False, 
+    mode='auto', 
+    period=1)
 ]
 
 history = model.fit_generator(train_gen,
