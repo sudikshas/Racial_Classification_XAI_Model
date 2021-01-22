@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-dataset_folder_name = '../../fairface_data'
+dataset_folder_name = '../fairface_data'
 
 TRAIN_TEST_SPLIT = 0.7
 IM_WIDTH = IM_HEIGHT = 198
@@ -31,12 +31,12 @@ dataset_dict['gender_alias'] = dict((g, i) for i, g in dataset_dict['gender_id']
 dataset_dict['race_alias'] = dict((g, i) for i, g in dataset_dict['race_id'].items())
 
 
-dataset_folder_name = '../../fairface_data' 
+dataset_folder_name = '../fairface_data' 
 dataset_csv = '/fairface_label_train.csv'
 dataset = pd.read_csv(dataset_folder_name + dataset_csv)
 
 dataset["file"] = dataset["file"].apply(
-    lambda x:"../../fairface_data/fairface_pad025/"+x)
+    lambda x:"../fairface_data/fairface_pad025/"+x)
 
 #Data Generator
 from keras.utils import to_categorical
@@ -244,7 +244,7 @@ model = MultiOutputModel().assemble_full_model(IM_WIDTH, IM_HEIGHT, num_races=le
 from keras.optimizers import Adam
 
 init_lr = 1e-4
-epochs = 1
+epochs = 100
 
 opt = Adam(lr=init_lr, decay=init_lr / epochs)
 
@@ -274,7 +274,7 @@ valid_gen = data_generator.generate_images(valid_idx, is_training=True, batch_si
 # ]
 
 callbacks = [
-    ModelCheckpoint("../model_checkpoint/gender-cp-{epoch:04d}.hdf5", 
+    ModelCheckpoint("../race_model_checkpoint/race-cp-{epoch:04d}.hdf5", 
     monitor='val_loss', 
     verbose=1, 
     save_best_only=True, 
