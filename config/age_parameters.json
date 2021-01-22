@@ -1,14 +1,29 @@
-{"load_data":{
-    "train_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_train.csv",
-    "train_image_path":  "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/train",
-    "resize": 198,
-    "TRAIN_TEST_SPLIT": 0.7
+{
+    "load_data":
+    {
+        "train_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_train.csv",
+        "train_image_path":  "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/train",
+        "valid_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_val.csv",
+        "valid_image_path":  "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/val",
+        "resize": 198,
+        "TRAIN_TEST_SPLIT": 0.97
     },
- "model_param":{
-     "lr": 1e-4,
-     "epochs": 100,
-     "train_batch_size": 32,
-     "valid_batch_size":32,
-     "save_path": "./models/age_model_2/cp-{epoch:04d}.hdf5"
- }
+    "model_param":
+    {
+        "lr": 1e-4,
+        "epochs": 100,
+        "train_batch_size": 64,
+        "valid_batch_size":64,
+        "save_path": "./models/age_model_3/cp-{epoch:04d}.hdf5",
+	"log_path": "./logs/age_model_3.csv"
+    },
+     "integrated_grad":
+    {
+        "model_param_path": "./models/age_model_2/cp-0092.hdf5",
+        "train_image_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/train",
+        "train_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_train.csv",
+        "save_path": "./pictures",
+        "img_idx": 19
+    }
 }
+

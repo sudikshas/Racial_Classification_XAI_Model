@@ -25,6 +25,7 @@ if __name__ == '__main__':
     train_batch_size = model_param["train_batch_size"]
     valid_batch_size = model_param["valid_batch_size"]
     save_path = model_param["save_path"]
+    log_path = model_param["log_path"]
     IM_WIDTH = IM_HEIGHT = data_info["resize"]
 
     ###preparing data and model
@@ -33,7 +34,7 @@ if __name__ == '__main__':
     
     ###training
     
-    training(model, data_generator, train_batch_size, valid_batch_size, lr, epochs, save_path)
+    training(model, data_generator, train_batch_size, valid_batch_size, lr, epochs, save_path, log_path)
 
 
     
