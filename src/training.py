@@ -1,13 +1,14 @@
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger, ReduceLROnPlateau
 from tensorflow.keras.optimizers import Adam
 
 ##THIS IS IMPORTANT!
 tf.compat.v1.disable_eager_execution()
 
 def training(model, data_generator, train_batch_size, valid_batch_size, lr, epochs, save_path, log_path):
+
 
     train_idx, valid_idx,test_idx = data_generator.generate_split_indexes()
     train_gen = data_generator.generate_images(train_idx, is_training = True, batch_size = train_batch_size)
@@ -16,7 +17,7 @@ def training(model, data_generator, train_batch_size, valid_batch_size, lr, epoc
     init_lr = lr
     epochs = epochs
 
-    optimizer = Adam(lr=init_lr, decay=init_lr / epochs)
+    optimizer = Adam(lr=init_lr) #, decay=init_lr / epochs
 
     model.compile(optimizer=optimizer, 
                   loss= 'categorical_crossentropy', 
@@ -39,7 +40,12 @@ def training(model, data_generator, train_batch_size, valid_batch_size, lr, epoc
         
         CSVLogger(log_path,
                   separator = ",",
-                  append = False)
+                  append = False),
+        
+        ReduceLROnPlateau(monitor='val_loss',
+                          factor=0.5,
+                          patience=5,
+                          mode = "min")
         ]
 
     print("curdir:", os.path.abspath(os.curdir))

@@ -5,25 +5,26 @@
         "train_image_path":  "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/train",
         "valid_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_val.csv",
         "valid_image_path":  "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/val",
-        "resize": 198,
-        "TRAIN_TEST_SPLIT": 0.97
+        "resize": 224,
+        "TRAIN_TEST_SPLIT": 0.9
     },
     "model_param":
     {
-        "lr": 1e-4,
-        "epochs": 100,
-        "train_batch_size": 64,
-        "valid_batch_size":64,
-        "save_path": "./models/age_model_3/cp-{epoch:04d}.hdf5",
-	"log_path": "./logs/age_model_3.csv"
+        "lr": 0.001,
+        "epochs": 300,
+        "train_batch_size": 128,
+        "valid_batch_size":128,
+        "save_path": "./models/xception_tr/xception_tr.hdf5",
+        "log_path": "./logs/xception_tr.csv"
     },
      "integrated_grad":
     {
-        "model_param_path": "./models/age_model_2/cp-0092.hdf5",
+        "model_param_path": "./models/xception_tr/xception_tr.hdf5",
         "train_image_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/train",
         "train_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_train.csv",
         "save_path": "./pictures",
-        "img_idx": 19
+        "size": 224,
+        "img_idx": 8895
     }
 }
 

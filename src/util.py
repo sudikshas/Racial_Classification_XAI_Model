@@ -10,9 +10,9 @@ from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, Ma
 from tensorflow.keras.layers import Activation, Dropout, Lambda, Dense
 from tensorflow.keras import Sequential
 from IntegratedGradients import *
-from model import *
 import json
 from tensorflow import keras
+from tensorflow.keras.applications.xception import preprocess_input
 
 class DataGenerator():
     """
@@ -50,7 +50,11 @@ class DataGenerator():
         """
         im = Image.open(img_path)
         im = im.resize((self.IM_WIDTH, self.IM_HEIGHT))
-        im = np.array(im) / 255.0
+        im = preprocess_input(np.array(im))
+        
+        #im = Image.open(img_path)
+        #im = im.resize((self.IM_WIDTH, self.IM_HEIGHT))
+        #im = np.array(im) / 255.0
         
         return im
         
@@ -93,7 +97,7 @@ def make_generator(train_label_path, train_image_path, valid_label_path, valid_i
     
     combined = pd.concat([train_csv, valid_csv]).reset_index(drop = True)
     combined = combined.drop(["gender", "race", "service_test"], axis = 1)
-
+    
     dataset_dict = {
         'age_id': {
             0: '0-2', 
@@ -117,9 +121,14 @@ def preprocess_image(img_path, width, height):
         """
         Used to perform some minor preprocessing on the image before inputting into the network.
         """
+        
         im = Image.open(img_path)
         im = im.resize((width, height))
-        im = np.array(im) / 255.0
+        im = preprocess_input(np.array(im))
+        
+        #im = Image.open(img_path)
+        #im = im.resize((width, height))
+        #im = np.array(im) / 255.0
         
         return im
     
@@ -137,11 +146,10 @@ out:
     annotation heatmaps
 """
 
-def integrated_grad_pic(model_param_path, train_image_path, train_label_path, save_path, img_idx):
+def integrated_grad_pic(model_param_path, train_image_path, train_label_path, save_path, img_idx, size):
     model = keras.models.load_model(model_param_path)
-    print("before ig")
+
     ig = integrated_gradients(model)
-    print("after ig")
 
     dataset_dict = {
         'age_id': {
@@ -162,7 +170,7 @@ def integrated_grad_pic(model_param_path, train_image_path, train_label_path, sa
     sample_label_df = pd.read_csv(train_label_path)
     sample_label = sample_label_df[sample_label_df["file"].str.contains(img_name)]["age"].values[0]
     
-    sample_image = preprocess_image(sample_path, 198, 198).reshape(1, 198, 198, 3)
+    sample_image = preprocess_image(sample_path, size, size).reshape(1, size, size, 3)
     
     # Plot the true image.
     plt.figure(figsize = (5, 5))

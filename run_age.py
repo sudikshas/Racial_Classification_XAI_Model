@@ -5,11 +5,11 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.optimizers import Adam
-from model import *
+#from model import *
+from model_trans import *
 from util import *
 from training import *
 import json
-
 
 if __name__ == '__main__':
     ###load parameters
@@ -30,7 +30,10 @@ if __name__ == '__main__':
 
     ###preparing data and model
     data_generator = make_generator(**data_info)
-    model = OutputModel().assemble_full_model(IM_WIDTH, IM_HEIGHT)
+    #model = OutputModel().assemble_full_model(IM_WIDTH, IM_HEIGHT)
+    model = OutputModel().make_default_hidden_layers(IM_WIDTH)
+    
+    print(model.summary())
     
     ###training
     

@@ -33,7 +33,7 @@ class integrated_gradients:
         
         #load model supports keras.Model and keras.Sequential
         if isinstance(model, Sequential):
-            self.model = model.model
+            self.model = model#model.model
         elif isinstance(model, Model):
             self.model = model
         else:
