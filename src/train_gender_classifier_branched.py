@@ -21,6 +21,7 @@ import tensorflow as tf
 
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
+from keras.callbacks import EarlyStopping
 
 
 IM_WIDTH = IM_HEIGHT = 198
@@ -37,7 +38,7 @@ val_csv = pd.read_csv(os.path.join(data_path, 'fairface_label_val.csv'))
 df = pd.concat([train_csv, val_csv])
 
 
-TRAIN_TEST_SPLIT = 0.7
+TRAIN_TEST_SPLIT = 0.8
 IM_WIDTH = IM_HEIGHT = 198
 
 dataset_dict = {
@@ -57,7 +58,7 @@ class FFFaceDataGenerator():
         self.df = df
         
     def generate_split_indexes(self):
-        p = np.random.permutation(len(self.df))
+        p = np.random.RandomState(seed=20).permutation(len(self.df))
         train_up_to = int(len(self.df) * TRAIN_TEST_SPLIT)
         train_idx = p[:train_up_to]
         test_idx = p[train_up_to:]
@@ -203,13 +204,14 @@ train_gen = data_generator.generate_images(train_idx, is_training=True, batch_si
 valid_gen = data_generator.generate_images(valid_idx, is_training=True, batch_size=valid_batch_size)
 
 callbacks = [
-    ModelCheckpoint("../model_checkpoint/gender-cp-{epoch:04d}.hdf5", 
+    ModelCheckpoint("../model_checkpoint/cp-{epoch:04d}.hdf5", 
     monitor='val_loss', 
     verbose=1, 
     save_best_only=True, 
     save_weights_only=False, 
     mode='auto', 
-    period=1)
+    period=1),
+    EarlyStopping(monitor='loss', patience=20)
 ]
 
 history = model.fit_generator(train_gen,

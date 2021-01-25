@@ -22,6 +22,7 @@ import tensorflow as tf
 import numpy as np
 
 from keras.utils import to_categorical
+from keras.callbacks import EarlyStopping
 
 
 import pandas as pd
@@ -31,9 +32,12 @@ from tensorflow import keras
 import tensorflow as tf
 import numpy as np
 
+import sys
+sys.path.insert(0, '../')
+
 from train_gender_classifier_branched import FFFaceDataGenerator
 
-TRAIN_TEST_SPLIT = 0.7
+TRAIN_TEST_SPLIT = 0.8
 IM_WIDTH = IM_HEIGHT = 198
 
 data_path = '../data/raw/'
@@ -69,7 +73,8 @@ callbacks = [
     save_best_only=False, 
     save_weights_only=False, 
     mode='auto', 
-    period=1)
+    period=1),
+    EarlyStopping(monitor='loss', patience=20)
 ]
 
 checkpoint_path = "../model_checkpoint/gender-cp-0045.hdf5"
