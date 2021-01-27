@@ -6,7 +6,7 @@
         "valid_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_val.csv",
         "valid_image_path":  "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/val",
         "resize": 224,
-        "TRAIN_TEST_SPLIT": 0.9
+        "TRAIN_TEST_SPLIT": 0.7
     },
     "model_param":
     {
@@ -14,8 +14,8 @@
         "epochs": 300,
         "train_batch_size": 128,
         "valid_batch_size":128,
-        "save_path": "./models/xception_tr/xception_tr.hdf5",
-        "log_path": "./logs/xception_tr.csv"
+        "save_path": "./models/xception_tr_7_split/xception_tr_7_split.hdf5",
+        "log_path": "./logs/xception_tr_7_split.csv"
     },
      "integrated_grad":
     {
