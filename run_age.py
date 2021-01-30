@@ -5,11 +5,14 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from tensorflow.keras.optimizers import Adam
-#from model import *
 from model_trans import *
 from util import *
 from training import *
 import json
+#from tensorflow.keras.applications.xception import preprocess_input
+from tensorflow.keras.applications import mobilenet_v2
+from tensorflow.keras.applications import resnet_v2
+import pandas as pd
 
 if __name__ == '__main__':
     ###load parameters
@@ -20,24 +23,38 @@ if __name__ == '__main__':
 
     param.close()
 
-    lr = model_param["lr"]
-    epochs = model_param["epochs"]
-    train_batch_size = model_param["train_batch_size"]
-    valid_batch_size = model_param["valid_batch_size"]
-    save_path = model_param["save_path"]
-    log_path = model_param["log_path"]
-    IM_WIDTH = IM_HEIGHT = data_info["resize"]
+    lr, epochs, batch_size, mapping_path, save_path, log_path = model_param.values()
+    
+    train_label_path, train_image_path, valid_label_path, valid_image_path, target, size = data_info.values()
+    
+    num_classes = pd.read_csv(valid_label_path)[target].nunique()
 
-    ###preparing data and model
-    data_generator = make_generator(**data_info)
-    #model = OutputModel().assemble_full_model(IM_WIDTH, IM_HEIGHT)
-    model = OutputModel().make_default_hidden_layers(IM_WIDTH)
+    
+    train_gen = create_generator(train_label_path,
+                                 train_image_path,
+                                 target,
+                                 size,
+                                 batch_size,
+                                 mapping_path,
+                                 resnet_v2.preprocess_input, ##change this
+                                 is_training = True)
+    
+    valid_gen = create_generator(valid_label_path,
+                                 valid_image_path,
+                                 target,
+                                 size,
+                                 batch_size,
+                                 mapping_path,
+                                 resnet_v2.preprocess_input, ##change this
+                                 is_training = False)
+    
+    model = build_model(num_classes = num_classes)
     
     print(model.summary())
     
     ###training
     
-    training(model, data_generator, train_batch_size, valid_batch_size, lr, epochs, save_path, log_path)
+    training(model, train_gen, valid_gen, lr, epochs, save_path, log_path)
 
 
     

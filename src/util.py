@@ -13,124 +13,125 @@ from IntegratedGradients import *
 import json
 from tensorflow import keras
 from tensorflow.keras.applications.xception import preprocess_input
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-class DataGenerator():
-    """
-    Data generator for the UTKFace dataset. This class should be used when training our Keras multi-output model.
-    """
-    def __init__(self, df, TRAIN_TEST_SPLIT, dataset_dict, resize):
-        self.df = df
-        self.TRAIN_TEST_SPLIT = TRAIN_TEST_SPLIT
-        self.dataset_dict = dataset_dict
-        self.IM_WIDTH = resize
-        self.IM_HEIGHT = resize
-        
-    def generate_split_indexes(self):
-        np.random.seed(20)
-        p = np.random.permutation(len(self.df))
-        train_up_to = int(len(self.df) * self.TRAIN_TEST_SPLIT)
-        train_idx = p[:train_up_to]
-        test_idx = p[train_up_to:]
 
-        train_up_to = int(train_up_to * self.TRAIN_TEST_SPLIT)
-        train_idx, valid_idx = train_idx[:train_up_to], train_idx[train_up_to:]
-        
-        # converts alias to id
-        self.df['age_id'] = self.df['age'].map(lambda age: self.dataset_dict['age_alias'][age])
+"""
+Function to create generator from the csv file
+input
+    csv_path: path to the csv file
+    image_path: path to the image directory
+    target: the class of interest(age, gender, or race)
+    size: the size of the image
+    batch_size: the batch size
+    preprocess_input: The preprocess function to apply based on different transfer learning model. Make sure to change
+    the import statement above if wants to apply different transfer learning model
+    mapping_path: a directionary objects indicating how each category is being mapped to the respective integer representation
+    is_training: whether or not the generator is used as training
 
-        print("Number of training data:{}".format(len(train_idx)))
-        print("Number of validation data:{}".format(len(valid_idx)))
-        print("Number of testing data:{}".format(len(test_idx)))
-              
-        return train_idx, valid_idx, test_idx
+output
+    a generator object ready to be trained
+"""
+def create_generator(csv_path, image_path, target, size, batch_size, mapping_path, preprocess_input, is_training):
     
-    def preprocess_image(self, img_path):
-        """
-        Used to perform some minor preprocessing on the image before inputting into the network.
-        """
-        im = Image.open(img_path)
-        im = im.resize((self.IM_WIDTH, self.IM_HEIGHT))
-        im = preprocess_input(np.array(im))
-        
-        #im = Image.open(img_path)
-        #im = im.resize((self.IM_WIDTH, self.IM_HEIGHT))
-        #im = np.array(im) / 255.0
-        
-        return im
-        
-    def generate_images(self, image_idx, is_training, batch_size=16):
-        """
-        Used to generate a batch with images when training/testing/validating our Keras model.
-        """
-        
-        # arrays to store our batched data
-        images, ages = [], []
-        while True:
-            for idx in image_idx:
-                person = self.df.iloc[idx]
-                
-                age = person['age_id']
-                file = person["file"]
-                
-                im = self.preprocess_image(file)
-                
-                ages.append(to_categorical(age, len(self.dataset_dict["age_id"])))
-                images.append(im)
-                
-                # yielding condition
-                if len(images) >= batch_size:
-                    yield np.array(images), [np.array(ages)]
-                    images, ages = [], []
-                    
-            if not is_training:
-                break
-
-
-
-def make_generator(train_label_path, train_image_path, valid_label_path, valid_image_path, resize, TRAIN_TEST_SPLIT):
+    if is_training:
+        horizontal_flip = False
+        vertical_flip = False
+    else:
+        horizontal_flip = True
+        vertical_flip = True
     
-    train_csv = pd.read_csv(train_label_path)
-    valid_csv = pd.read_csv(valid_label_path)
+    df = pd.read_csv(csv_path)
+    df["file"] = df["file"].apply(lambda x: os.path.join(image_path, x.split("/")[1]))
     
-    train_csv["file"] = train_csv["file"].apply(lambda x: os.path.join(train_image_path, x.split("/")[1]))
-    valid_csv["file"] = valid_csv["file"].apply(lambda x: os.path.join(valid_image_path, x.split("/")[1]))
+    imgdatagen = ImageDataGenerator(
+        preprocessing_function = preprocess_input,
+        horizontal_flip = horizontal_flip, 
+        vertical_flip = vertical_flip
+        #rescale = 1 / 255
+    )
     
-    combined = pd.concat([train_csv, valid_csv]).reset_index(drop = True)
-    combined = combined.drop(["gender", "race", "service_test"], axis = 1)
+    data_generator = imgdatagen.flow_from_dataframe(
+        dataframe = df,
+        directory = None,
+        x_col = "file",
+        y_col = target,
+        target_size = (size, size),
+        batch_size = batch_size,
+        save_format = "jpg",
+        shuffle = True
+    )
     
-    dataset_dict = {
-        'age_id': {
-            0: '0-2', 
-            1: '3-9', 
-            2: '10-19', 
-            3: '20-29', 
-            4: '30-39',
-            5: '40-49',
-            6: '50-59',
-            7: '60-69',
-            8: "more than 70"
-        }
-    }
+    with open(mapping_path, "w") as f:
+        json.dump(data_generator.class_indices, f)
+    f.close()
+    
+    return data_generator
+    
 
-    dataset_dict['age_alias'] = dict((g, i) for i, g in dataset_dict['age_id'].items())
+"""
+Function to re-organize the dataset
+input
+    save_path: The new directory to save all the dataset
+    train_csv_path, valid_csv_path, train_image_path, valid_image_path are self-explanatory
+    target: the category to reorganized, such as age, gender, or raace
     
-    return DataGenerator(combined, TRAIN_TEST_SPLIT, dataset_dict, resize)
-  
+output will look similar to this(e.g. using gender):
+    save_path
+        train
+            male
+                images
+                ...
+            female
+                images
+                ...
+        validation
+            male
+                images
+                ...
+            female
+                images
+                ...
+"""
+def create_dataset(save_path, train_csv_path, valid_csv_path, train_image_path, valid_image_path, target):
+    if not os.path.exists(save_path):
+        os.mkdir(save_path)
+        print("created dircetory: {}".format(save_path))
+        
+    else:
+        print("dataset {} already exist!".format(save_path))
+        return
+        #shutil.rmtree(save_path)
 
-def preprocess_image(img_path, width, height):
-        """
-        Used to perform some minor preprocessing on the image before inputting into the network.
-        """
         
-        im = Image.open(img_path)
-        im = im.resize((width, height))
-        im = preprocess_input(np.array(im))
+    csv_path = [train_csv_path, valid_csv_path]
+    image_path = [train_image_path, valid_image_path]
+    names = ["train", "validation"]
+    
+    for i in range(len(csv_path)):
+        df = pd.read_csv(csv_path[i])
+        df["file"] = df["file"].apply(lambda x: os.path.join(image_path[i], x.split("/")[1]))
+        grp_df = df.groupby(target)
+        grps = grp_df.groups.keys()
         
-        #im = Image.open(img_path)
-        #im = im.resize((width, height))
-        #im = np.array(im) / 255.0
+        sub_dir = os.path.join(save_path, names[i])
+        os.mkdir(sub_dir)
+        print("created sub-directory: {}".format(sub_dir))
         
-        return im
+        for grp in grps:
+            grp_dir = os.path.join(sub_dir, grp)
+            os.mkdir(grp_dir)
+            original_file_path = grp_df.get_group(grp)["file"]
+            func = lambda x: os.path.join(grp_dir, x.split("/")[-1])
+            new_file_path = original_file_path.apply(func).values
+            original_file_path = original_file_path.values
+            print("created category-directory: {}".format(grp_dir))
+            
+            for j in range(len(new_file_path)):
+                img = PIL.Image.open(original_file_path[j])
+                img.save(new_file_path[j])
+    
+    print("Finished!")
     
 """
 Function to use the integrated_gradient to visualize the image
@@ -205,35 +206,6 @@ def integrated_grad_pic(model_param_path, train_image_path, train_label_path, sa
     plt.show()
     print("Ground Truth:", sample_label)
     print("Predicted:", dataset_dict["age_id"][np.argmax(output_prob)])
-
-"""
-def make_generator(train_label_path, train_image_path, resize, TRAIN_TEST_SPLIT):
-  
-    train_csv_df = pd.read_csv(train_label_path)
-
-    img_name = os.listdir(train_image_path)
-    img_name = sorted(img_name, key = lambda x: int(x.split(".")[0]))
-    img_name = list(map(lambda x: os.path.join(train_image_path, x), img_name))
-
-    train_csv_df["file"] = img_name
-    working = train_csv_df.drop(["gender", "race", "service_test"], axis = 1)
-
-    dataset_dict = {
-        'age_id': {
-            0: '0-2', 
-            1: '3-9', 
-            2: '10-19', 
-            3: '20-29', 
-            4: '30-39',
-            5: '40-49',
-            6: '50-59',
-            7: '60-69',
-            8: "more than 70"
-        }
-    }
-
-    dataset_dict['age_alias'] = dict((g, i) for i, g in dataset_dict['age_id'].items())
     
-    return DataGenerator(working, TRAIN_TEST_SPLIT, dataset_dict, resize)
-"""
+
     
