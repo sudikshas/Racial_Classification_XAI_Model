@@ -25,7 +25,7 @@ def build_model(num_classes, size = 224):
     
     model = Sequential()
     
-    tr = ResNet50V2(include_top = True,
+    tr = ResNet50V2(include_top = False,
                        weights = "imagenet",
                        input_shape = (size, size, 3))
         
