@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from tensorflow.keras.utils import to_categorical
-import tensorflow as tf
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPooling2D, Flatten
 from tensorflow.keras.layers import Activation, Dropout, Lambda, Dense
@@ -14,6 +13,8 @@ import json
 from tensorflow import keras
 from tensorflow.keras.applications.xception import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from PIL import Image
+from tensorflow.keras.applications import resnet_v2
 
 
 """
@@ -35,20 +36,23 @@ output
 def create_generator(csv_path, image_path, target, size, batch_size, mapping_path, preprocess_input, is_training):
     
     if is_training:
-        horizontal_flip = False
-        vertical_flip = False
-    else:
+        rotation_range = 30
         horizontal_flip = True
         vertical_flip = True
+    else:
+        rotation_range = 0
+        horizontal_flip = False
+        vertical_flip = False
     
     df = pd.read_csv(csv_path)
     df["file"] = df["file"].apply(lambda x: os.path.join(image_path, x.split("/")[1]))
     
     imgdatagen = ImageDataGenerator(
         preprocessing_function = preprocess_input,
+        rotation_range = rotation_range,
         horizontal_flip = horizontal_flip, 
-        vertical_flip = vertical_flip
-        #rescale = 1 / 255
+        vertical_flip = vertical_flip,
+        #rescale = 1.0 / 255
     )
     
     data_generator = imgdatagen.flow_from_dataframe(
@@ -147,65 +151,59 @@ out:
     annotation heatmaps
 """
 
-def integrated_grad_pic(model_param_path, train_image_path, train_label_path, save_path, img_idx, size):
+def integrated_grad_pic(model_param_path, image_path, label_path, save_path, target, mapping, size, img_idx):
+    
     model = keras.models.load_model(model_param_path)
-
     ig = integrated_gradients(model)
-
-    dataset_dict = {
-        'age_id': {
-            0: '0-2', 
-            1: '3-9', 
-            2: '10-19', 
-            3: '20-29', 
-            4: '30-39',
-            5: '40-49',
-            6: '50-59',
-            7: '60-69',
-            8: "more than 70"
-        }
-    }
+    
+    with open(mapping) as f:
+        mapping_dict = json.load(f)
+    f.close()
+    
+    mapping_dict = {val:key for key, val in mapping_dict.items()}
+    
+    max_iter_range = len(mapping_dict)
+    if target == "age" or target == "race":
+        subplot_row = 3
+        subplot_col = 3
+    else:
+        subplot_row = 2
+        subplot_col = 1
+    
     
     img_name = "{}.jpg".format(img_idx)
-    sample_path = os.path.join(train_image_path, img_name)
-    sample_label_df = pd.read_csv(train_label_path)
-    sample_label = sample_label_df[sample_label_df["file"].str.contains(img_name)]["age"].values[0]
+    sample_path = os.path.join(image_path, img_name)
+    sample_label_df = pd.read_csv(label_path)
+    sample_label = sample_label_df[sample_label_df["file"].str.contains(img_name)][target].values[0]
     
-    sample_image = preprocess_image(sample_path, size, size).reshape(1, size, size, 3)
+    sample_image = Image.open(sample_path)
+    sample_image.save(os.path.join(save_path, "Original_") + str(img_idx)+".png")
     
-    # Plot the true image.
-    plt.figure(figsize = (5, 5))
-    plt.imshow(sample_image.squeeze(), cmap="Greys")
-    plt.xticks([],[])
-    plt.yticks([],[])
-    plt.title("Original image", fontsize=8)
-    plt.savefig(os.path.join(save_path, "Original_") + str(img_idx)+".png")
-
-    # Generate explanation with respect to each of 10 output channels.
+    processed_image = resnet_v2.preprocess_input(plt.imread(sample_path)).reshape(-1, size, size, 3)
+    
     exs = []
-    output_prob = model.predict(sample_image).squeeze()
-    for i in range(1,10):
-        exs.append(ig.explain(sample_image.squeeze(), outc=i-1))
+    output_prob = model.predict(processed_image).squeeze()
+    for i in range(1, max_iter_range + 1):
+        exs.append(ig.explain(processed_image.squeeze(), outc=i-1))
     exs = np.array(exs)
 
     # Plot them
     th = max(np.abs(np.min(exs)), np.abs(np.max(exs)))
 
-
-    fig = plt.subplots(3,3,figsize=(15,15))
-    for i in range(9):
+    fig = plt.subplots(subplot_row, subplot_col,figsize=(15,15))
+    for i in range(max_iter_range):
         ex = exs[i]
-        plt.subplot(3,3,i+1)
+        plt.subplot(subplot_row,subplot_col,i+1)
         plt.imshow(ex[:,:,0], cmap="seismic", vmin=-1*th, vmax=th)
         plt.xticks([],[])
         plt.yticks([],[])
-        plt.title("heatmap for age range {} with probability {:.2f}".format(dataset_dict["age_id"][i],output_prob[i]), 
+        plt.title("heatmap for {} {} with probability {:.2f}".format(target, mapping_dict[i],output_prob[i]), 
                   fontsize=10)
     plt.tight_layout()
     plt.savefig(os.path.join(save_path,"integrated-viz_") + str(img_idx)+".png")
     plt.show()
     print("Ground Truth:", sample_label)
-    print("Predicted:", dataset_dict["age_id"][np.argmax(output_prob)])
+    print("Predicted:", mapping_dict[np.argmax(output_prob)])
     
 
     

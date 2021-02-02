@@ -10,19 +10,21 @@
     },
     "model_param":
     {
-        "lr": 0.0005,
+        "lr": 0.0008,
         "epochs": 300,
         "batch_size": 128,
         "mapping_path": "./mapping/race.json",
-        "save_path": "./models/race/race_v2.hdf5",
-        "log_path": "./logs/race_v2.csv"
+        "save_path": "./models/race/race_t5.hdf5",
+        "log_path": "./logs/race_t5.csv"
     },
      "integrated_grad":
     {
-        "model_param_path": "./models/xception_tr/xception_tr.hdf5",
-        "train_image_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/train",
-        "train_label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_train.csv",
-        "save_path": "./pictures",
+        "model_param_path": "./models/race/race_t5.hdf5",
+        "image_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025/val",
+        "label_path": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_val.csv",
+        "save_path": "./pictures/race",
+        "target":"race",
+        "mapping": "./mapping/race.json",
         "size": 224,
         "img_idx": 8895
     }

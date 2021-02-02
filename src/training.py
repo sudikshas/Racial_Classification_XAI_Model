@@ -2,20 +2,23 @@ import os
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, CSVLogger, ReduceLROnPlateau
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adam, Nadam
 
 ##THIS IS IMPORTANT!
 tf.compat.v1.disable_eager_execution()
+#sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
 
 def training(model, train_gen, valid_gen, lr, epochs, save_path, log_path):
+    #tf.compat.v1.disable_eager_execution()
 
-    optimizer = Adam(lr=lr) 
+    optimizer = Nadam(lr=lr) 
+    
+    sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
 
+    
     model.compile(optimizer=optimizer, 
                   loss= 'categorical_crossentropy', 
                   metrics= ["accuracy"])
-
-    sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
 
 
     callbacks = [
@@ -27,7 +30,7 @@ def training(model, train_gen, valid_gen, lr, epochs, save_path, log_path):
                         mode = "min"),
 
         EarlyStopping(monitor = "val_loss",
-                      patience = 20,
+                      patience = 30,
                       mode = "min"),
         
         CSVLogger(log_path,
@@ -35,8 +38,8 @@ def training(model, train_gen, valid_gen, lr, epochs, save_path, log_path):
                   append = False),
         
         ReduceLROnPlateau(monitor='val_loss',
-                          factor=0.7,
-                          patience=5,
+                          factor=0.5,
+                          patience= 10,
                           mode = "min")
         ]
 
@@ -47,8 +50,10 @@ def training(model, train_gen, valid_gen, lr, epochs, save_path, log_path):
         x = train_gen,
         epochs = epochs,
         callbacks = callbacks,
-        validation_data = valid_gen
+        validation_data = valid_gen,
+        use_multiprocessing = True,
+        workers = 8
     )
-    
+
     return history
     
