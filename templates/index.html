@@ -1,0 +1,33 @@
+<!doctype html>
+<title>Flask & VGG16 Image Classifier</title>
+<h2>Select a file to upload</h2>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+	  	<!-- Image: <img src="{{ url_for('display_image', filename=filename) }}"> <br> -->
+		<!-- <div>
+			<img src="{{ url_for('display_image', filename=filename) }}">
+		</div> -->
+        Label: {{ messages[0] }} <br>
+        Accuracy: {{ messages[1] }}
+	  {% endif %}
+	{% endwith %}
+</p>
+{% if filename %}
+	<div>
+		<img src="{{url_for('static', filename=filename) }}" width="100" height="100">
+	</div>
+{% endif %}
+<form method="post" action="/" enctype="multipart/form-data">
+    <dl>
+	<p>
+		<input type="file" name="file" autocomplete="off" required>
+	</p>
+    </dl>
+    <p>
+	<input type="submit" value="Submit">
+    </p>
+</form>
+
+
+
