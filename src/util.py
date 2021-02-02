@@ -11,7 +11,7 @@ from tensorflow.keras import Sequential
 from IntegratedGradients import *
 import json
 from tensorflow import keras
-from tensorflow.keras.applications.xception import preprocess_input
+#from tensorflow.keras.applications.xception import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 from tensorflow.keras.applications import resnet_v2
@@ -48,7 +48,7 @@ def create_generator(csv_path, image_path, target, size, batch_size, mapping_pat
     df["file"] = df["file"].apply(lambda x: os.path.join(image_path, x.split("/")[1]))
     
     imgdatagen = ImageDataGenerator(
-        preprocessing_function = preprocess_input,
+        preprocessing_function = resnet_v2.preprocess_input,
         rotation_range = rotation_range,
         horizontal_flip = horizontal_flip, 
         vertical_flip = vertical_flip,
