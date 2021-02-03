@@ -14,8 +14,8 @@
         "epochs": 300,
         "batch_size": 128,
         "mapping_path": "./mapping/race.json",
-        "save_path": "./models/race/race_t5.hdf5",
-        "log_path": "./logs/race_t5.csv"
+        "save_path": "./models/race/race_t6.hdf5",
+        "log_path": "./logs/race/race_t6.csv"
     },
      "integrated_grad":
     {
