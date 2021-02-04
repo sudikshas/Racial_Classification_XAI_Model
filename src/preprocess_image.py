@@ -4,7 +4,7 @@ from PIL import Image
 import dlib
 import numpy as np
 
-IM_WIDTH = IM_HEIGHT = 198
+IM_WIDTH = IM_HEIGHT = 224
 
 def rect_to_bb(rect):
 	# take a bounding predicted by dlib and convert it
