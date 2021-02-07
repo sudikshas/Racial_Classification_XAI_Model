@@ -33,7 +33,8 @@
 ##### visualizations
 * contains plots generated using the generate_plots script.
 
-
+### experimenting
+* Contains development codes for our own use.
 
 ### How to run the code
 1. please pull the my docker image: `michael459165/capstone2:new6` and run the code inside this container.
