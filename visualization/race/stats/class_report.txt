@@ -1,0 +1,13 @@
+                 precision    recall  f1-score   support
+
+          Black       0.81      0.84      0.82      1556
+     East Asian       0.70      0.69      0.70      1550
+         Indian       0.71      0.66      0.69      1516
+Latino_Hispanic       0.48      0.57      0.52      1623
+ Middle Eastern       0.60      0.50      0.55      1209
+Southeast Asian       0.61      0.60      0.61      1415
+          White       0.70      0.69      0.69      2085
+
+       accuracy                           0.66     10954
+      macro avg       0.66      0.65      0.65     10954
+   weighted avg       0.66      0.66      0.66     10954
