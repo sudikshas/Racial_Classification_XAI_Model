@@ -33,7 +33,7 @@
 ##### visualizations
 * contains plots generated using the generate_plots script.
 
-### experimenting
+##### experimenting
 * Contains development codes for our own use.
 
 ### How to run the code
