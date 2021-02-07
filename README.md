@@ -44,8 +44,8 @@
 5. visit the "generate_stats in the config file and customize your own parameters. Type `python generate_plots.py` to generate statistics and plots.
 
 ### Testing if your input is valid
-1. After you customized your parameters for the "model_param", please type `python run.py test`. Check the returned message, if it says "You are all set! Please type python run.py to train your model.", then type `python run.py` in the terminal.
-2. After you customized your parameters for the "integrated_grad", please type `python integrated_grad.py test`. Check the returned message, if it says "You are all set! Please type "python integrated_grad.py to generate the activation maps.", then type `python integrated_grad.py` in the terminal.
+1. After you customized your parameters for the "model_param", please type `python run.py test`. Check the returned message, if it says **"You are all set! Please type python run.py to train your model."**, then type `python run.py` in the terminal.
+2. After you customized your parameters for the "integrated_grad", please type `python integrated_grad.py test`. Check the returned message, if it says **"You are all set! Please type "python integrated_grad.py to generate the activation maps."**, then type `python integrated_grad.py` in the terminal.
 
 
 ### Moving forward
