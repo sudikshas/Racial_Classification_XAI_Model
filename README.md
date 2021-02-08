@@ -36,6 +36,9 @@ This is a project about visualizing Convolutional Neural Network (CNN) with XAI 
 ##### experimenting
 * Contains development codes for our own use.
 
+##### test_data
+* Contains sample data to run just for the purpose of demo.
+
 ### How to run the code
 1. please pull the my docker image: `michael459165/capstone2:new6` and run the code inside this container.
 2. please go to the config file to change the parameters. This file has 4 sections, each corresponds to the parameters of a particular task.
