@@ -44,8 +44,8 @@ This is a project about visualizing Convolutional Neural Network (CNN) with XAI 
 5. visit the "generate_stats in the config file and customize your own parameters. Type `python generate_plots.py` to generate statistics and plots.
 
 ### Testing if your input is valid
-1. After you customized your parameters for the "model_param", please type `python run.py test`. Check the returned message, if it says **"You are all set! Please type python run.py to train your model."**, then type `python run.py` in the terminal.
-2. After you customized your parameters for the "integrated_grad", please type `python integrated_grad.py test`. Check the returned message, if it says **"You are all set! Please type "python integrated_grad.py to generate the activation maps."**, then type `python integrated_grad.py` in the terminal.
+1. `python run.py test` will train a model with a very small dataset. This just serves as a simple demo to run
+2. `python integrated_grad.py test` will create a integrated-grad pictures in the test_data/integrated_grad folder
 
 
 ### Moving forward

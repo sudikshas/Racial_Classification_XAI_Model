@@ -1,0 +1,31 @@
+{
+    "load_data":
+    {
+        "train_label_path": "./test_data/fairface_label_train.csv",
+        "train_image_path":  "./test_data/train",
+        "valid_label_path": "./test_data/fairface_label_val.csv",
+        "valid_image_path":  "./test_data/val",
+        "target": "age",
+        "size": 224
+    },
+    "model_param":
+    {
+        "lr": 0.0008,
+        "epochs": 50,
+        "batch_size": 10,
+        "mapping_path": "./test_data/age.json",
+        "save_path": "./test_data/age_v1.hdf5",
+        "log_path": "./test_data/age_v1_log.csv"
+    },
+     "integrated_grad":
+    {
+        "model_param_path": "./models/age/age_v1.hdf5",
+        "image_path": "./test_data/val",
+        "label_path": "./test_data/fairface_label_val.csv",
+        "save_path": "./test_data/integrated_grad",
+        "target":"age",
+        "mapping": "./mapping/age.json",
+        "size": 224,
+        "img_idx_lst": [30]
+    }
+}

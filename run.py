@@ -30,15 +30,19 @@ if __name__ == '__main__':
     
     targets = sys.argv[1:]
     
+    #############testing##############
     if "test" in targets:
-        error = test_param(**data_info.values())
+        with open("./test_data/parameters.json") as param:
+            data = json.load(param)
+            model_param = data["model_param"]
+            data_info = data["load_data"]
+            
+        param.close()
         
-        if error:
-            sys.exit("ERROR: There is something wrong with your parameters. Please change.")
-        else:
-            sys.exit("You are all set! Please run python run.py to train your model.")
+        lr, epochs, batch_size, mapping_path, save_path, log_path = model_param.values()
+        train_label_path, train_image_path, valid_label_path, valid_image_path, target, size = data_info.values()
+    #############testing##############
            
-    
     num_classes = pd.read_csv(valid_label_path)[target].nunique()
 
     

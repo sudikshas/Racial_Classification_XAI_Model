@@ -13,12 +13,17 @@ if __name__ == '__main__':
         integrated_grad = parameters["integrated_grad"]
     param.close()
     
+    
     targets = sys.argv[1:]
+    
+    #############testing##############
     if "test" in targets:
-        error = test_integrated_param(**integrated_grad)
-        if error:
-            sys.exit("ERROR: please modify the parameters of integrated_grad")
-
+        with open("./test_data/parameters.json") as param:
+            parameters = json.load(param)
+            integrated_grad = parameters["integrated_grad"]
+        param.close()
+    #############testing##############
+        
     integrated_grad_pic(**integrated_grad)
     
     
