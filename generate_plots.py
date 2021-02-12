@@ -22,7 +22,7 @@ if __name__ == '__main__':
     
     log_path, label_path, image_path, target, save_path, model_path = generate_stats.values()
     model = keras.models.load_model(model_path)
-    mapping_path = os.path.join("./mapping", target)
+    mapping_path = os.path.join("./mapping", target + ".json")
  
     generator = create_generator(label_path,
                                      image_path,

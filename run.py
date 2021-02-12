@@ -64,7 +64,9 @@ if __name__ == '__main__':
                                  resnet_v2.preprocess_input, ##change this
                                  is_training = False)
 
-
+    print("number of training data:", len(train_gen) * batch_size)
+    print("number of validation data:", len(valid_gen) * batch_size)
+    
     model = build_model(num_classes = num_classes)
 
     #model = OutputModel().make_default_hidden_layers(size, num_ages = num_classes)
