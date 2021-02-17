@@ -10,7 +10,11 @@ LABEL maintainer="UC San Diego ITS/ETS <ets-consult@ucsd.edu>"
 # CUDA Toolkit
 #RUN conda install -y cudatoolkit=10.1 cudnn nccl
 RUN conda install -c anaconda cudatoolkit=10.1.243 cudnn=7.6.5
-
+RUN pip install CMake
+RUN pip install dlib
+RUN pip install plotly
+RUN pip install opencv-python
+RUN pip install imutils
 #RUN conda install -y cudatoolkit=10.1 cudnn nccl && \
 #    conda clean --all -f -y
 

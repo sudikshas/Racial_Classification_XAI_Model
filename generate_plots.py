@@ -13,12 +13,8 @@ if __name__ == '__main__':
     with open("./config/parameters.json") as param:
         all_info = json.load(param)
         generate_stats = all_info["generate_stats"]
-        model_param = all_info["model_param"]
-        load_data = all_info["load_data"]
         
     param.close()
-    
-   
     
     log_path, label_path, image_path, target, save_path, model_path = generate_stats.values()
     model = keras.models.load_model(model_path)

@@ -97,7 +97,7 @@ class integrated_gradients:
         - steps: # steps from reference values to the actual sample (defualted to 50).
     Output: list of numpy arrays to integrated over.
     '''
-    def explain(self, sample, outc=0, reference=False, num_steps=50, verbose=0):
+    def explain(self, sample, outc=0, reference=False, num_steps=50, verbose=1):
         
         # Each element for each input stream.
         samples = []
