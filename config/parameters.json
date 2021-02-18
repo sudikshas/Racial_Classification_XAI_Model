@@ -14,8 +14,8 @@
         "epochs": 300,
         "batch_size": 128,
         "mapping_path": "./mapping/race.json",
-        "save_path": "./models/race/race_biased_v1.hdf5",
-        "log_path": "./logs/race/race_biased_v1.csv"
+        "save_path": "./models/race/race_v6.hdf5",
+        "log_path": "./logs/race/race_v6.csv"
     },
      "integrated_grad":
     {
@@ -30,7 +30,7 @@
     },
     "generate_stats":
     {
-        "log_path": "./logs/race/race_biased_v1.csv", 
+        "log_path": "./logs/race/race_v6.csv", 
         "label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_val.csv",
         "image_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val",
         "target": "race",
