@@ -545,7 +545,7 @@ def integrated_grad_PIL(PIL_img, target, lookup = None):
         lookup = lookup.lower()
         pred_idx = mapping_dict[lookup]
 
-    ex = ig.explain(processed_image.squeeze(), outc=pred_idx)
+    ex = ig.explain(PIL_img.squeeze(), outc=pred_idx)
 
     th = max(np.abs(np.min(ex)), np.abs(np.max(ex)))
 
