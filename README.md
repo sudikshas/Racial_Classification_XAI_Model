@@ -42,9 +42,9 @@ This is a project about visualizing Convolutional Neural Network (CNN) with XAI 
 ### How to run the code
 1. please pull the my docker image: `michael459165/capstone2:new6` and run the code inside this container.
 2. please go to the config file to change the parameters. This file has 4 sections, each corresponds to the parameters of a particular task.
-3. visit "load_data" and "model_param" in the config file and customize your own parameters. Type `python run.py` to train your model.
-4. visit the "integrated_grad" in the config file and customize your own parameters. Type `python integrated_grad.py` to generate the activation maps of your model.
-5. visit the "generate_stats in the config file and customize your own parameters. Type `python generate_plots.py` to generate statistics and plots.
+3. visit "load_data" and "model_param" in the config file and customize your own parameters. Type `python run.py train_model` to train your model.
+4. visit the "integrated_grad" in the config file and customize your own parameters. Type `python run.py integrated_grad` to generate the activation maps of your model.
+5. visit the "generate_stats in the config file and customize your own parameters. Type `python run.py generate_plots` to generate statistics and plots.
 
 ### Testing the script
 1. `python run.py test` will train a model with a very small dataset. This just serves as a simple demo to run
