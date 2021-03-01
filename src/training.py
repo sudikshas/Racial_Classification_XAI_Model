@@ -6,25 +6,18 @@ from tensorflow.keras.optimizers import Adam, Nadam
 
 ##THIS IS IMPORTANT!
 tf.compat.v1.disable_eager_execution()
-#sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
 
 def training(model, train_gen, valid_gen, lr, epochs, save_path, log_path):
-    #tf.compat.v1.disable_eager_execution()
-
     optimizer = Nadam(lr=lr) 
-    
     sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(log_device_placement=True))
-
-    
     model.compile(optimizer=optimizer, 
                   loss= 'categorical_crossentropy', 
                   metrics= ["accuracy"])
-
-
+    
     callbacks = [
         ModelCheckpoint(
                         filepath = save_path,
-                        save_weights_only = False, #previously set True
+                        save_weights_only = False, 
                         save_best_only = True,
                         monitor='val_loss',
                         mode = "min"),
@@ -43,8 +36,8 @@ def training(model, train_gen, valid_gen, lr, epochs, save_path, log_path):
                           mode = "min")
         ]
 
-    print("curdir:", os.path.abspath(os.curdir))
-    print("save_path:", save_path)
+    #print("curdir:", os.path.abspath(os.curdir))
+    #print("save_path:", save_path)
 
     history = model.fit(
         x = train_gen,

@@ -11,7 +11,6 @@ from tensorflow.keras import Sequential
 from IntegratedGradients import *
 import json
 from tensorflow import keras
-#from tensorflow.keras.applications.xception import preprocess_input
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 from tensorflow.keras.applications import resnet_v2
@@ -88,7 +87,7 @@ input
     train_csv_path, valid_csv_path, train_image_path, valid_image_path are self-explanatory
     target: the category to reorganized, such as age, gender, or raace
     
-output will look similar to this(e.g. using gender):
+output will look similar to this(e.g. using gender)
     save_path
         train
             male
@@ -150,6 +149,7 @@ function to visualize the training progress
 input
     log_path: The csv file that logged the training progress
     target: the name of the class (e.g. age, race, gender)
+    
 output
     the accuray and loss curve for both the training and validation
 """
@@ -192,6 +192,7 @@ input
     target: the name of the class (e.g. age, race, gender)
     target_map: The mapping of the class
     save_path: where the plot should be saved
+    
 output
     The class-specific barplot for precision, recall, f1-score, accuracy, and support
 """
@@ -251,12 +252,13 @@ Function to detect face from an image
 input
     image_path: The path to the image. The image should include ONLY 1 face to align with the purpose of our web-app
     im_size: The size that the image should be resized
+    
 output
     an numpy array of an image that has been processed using the resnetv2.preprocess_input
 """
 def detect_face(image_path, im_size = 224, default_max_size=800,size = 300, padding = 0.25):
-    cnn_face_detector = dlib.cnn_face_detection_model_v1('./dlib_mod/mmod_human_face_detector.dat')
-    sp = dlib.shape_predictor('./dlib_mod/shape_predictor_5_face_landmarks.dat')
+    cnn_face_detector = dlib.cnn_face_detection_model_v1('./models/dlib_mod/mmod_human_face_detector.dat')
+    sp = dlib.shape_predictor('./models/dlib_mod/shape_predictor_5_face_landmarks.dat')
     base = 2000  # largest width and height
 
     img = dlib.load_rgb_image(image_path)
@@ -296,6 +298,7 @@ input
     img_path: The path to the image
     model_path: The path to the model
     mapping_path: The mapping
+    
 out
     The prediction made by the model
 """
@@ -307,6 +310,7 @@ input
     model_path: The path to the model
     mapping_path: The mapping between labels(in number) and categories
     result_df_path: The aggregate results
+    
 output
     out: The prediction
     pred_prob: The accuracy of making the out prediction
@@ -336,16 +340,56 @@ def get_prediction(img_path, model_path, mapping_path, result_df_path):
     
     return out, pred_prob, aggregate_acc
 
+
+
+""""
+Function to create a biased dataset based on the population stats manually added according to the 2020 US Census. The Asian populations are estimated based on 2016 population data.
+
+input
+    csv_path: path to the csv file
+    save_path: path to save the biased dataset
+    
+output
+    a biased dataset saved in the save_path
+"""
+def create_biased_dataset(csv_path, save_path):
+    df = pd.read_csv(csv_path)
+    races = df["race"].unique()
+    population = {"White": 0.601, 
+                 "Black": 0.134,
+                 "Latino_Hispanic": 0.185,
+                 "East Asian": 0.022,
+                 "Southeast Asian": 0.022,
+                 "Indian": 0.012,
+                  "Middle Eastern": 0.024
+                 }
+
+    total = int(len(df.loc[df.race == 'White'])/population['White'])
+
+    biased_df = pd.DataFrame()
+    for race in races:
+        num_rows = int(total*population[race])
+        # Randomly sample rows based on population
+        single_race = df.loc[df.race == race].sample(num_rows)
+        if biased_df.empty:
+            biased_df = single_race
+        else:
+            biased_df = pd.concat([biased_df, single_race])
+    biased_df = biased_df.sample(frac=1).reset_index(drop=True)
+    save_path.to_csv(save_path, index = False)
+    
+
+
 """
 Function to use the integrated_gradient to visualize the image
-in: 
+input 
     model_param_path: saved model in .hdf5 format
     image_path: The image_path
     label_path: The label_path in .csv format
     save_path: path to save the image
     img_idx: The index of the image
 
-out:
+output
     original pictures
     annotation heatmaps
 """
@@ -415,8 +459,10 @@ def fig2img(fig):
 """
 functions to load the model with weights
 
-in: weight_name of the checkpoint
-out: the model loaded with weights
+input
+    weight_name: weight_name of the checkpoint
+output
+    the model loaded with weights
 """
 def load_model_with_weights(weight_name):
     if "age" in weight_name:
@@ -436,12 +482,13 @@ Function similar to integrated_grad_pic but just do it on one image
 
 modification: the returned output is an image. This function no longer save the image into jpg.
 
-in: 
+input 
     model_param_path: saved model in .hdf5 format
     mapping: The dictionary object of the mapping between labels and category
     target: The target(e.g. race, age, gender)
     image_path: The path to the image
-out:
+    
+output
     a single image of object PIL.PngImage
 """
 def integrated_grad_pic_single(model_param_path,mapping, target, image_path):
@@ -502,7 +549,7 @@ NOTE: Before running this, Make sure you:
        
    ALSO: Make sure you'd changed the model path and mapping path so that the function can run.
 
-in: 
+input 
     PIL_img: a PIL_img object PIL.Image.Image
     
     target: the target(e.g. race, age, gender)
@@ -512,7 +559,7 @@ in:
             the function would display the heatmap with "white" category even if the category
             does have have the highest probability.
    
-out:
+output
     a single image of object PIL.PngImagePlugin.PngImageFile
 """
 def integrated_grad_PIL(PIL_img, target, lookup = None):
