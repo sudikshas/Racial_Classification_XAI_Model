@@ -1,2 +1,0 @@
-model_checkpoint_path: "age_ckpt"
-all_model_checkpoint_paths: "age_ckpt"

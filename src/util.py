@@ -286,9 +286,9 @@ def detect_face(image_path, im_size = 224, default_max_size=800,size = 300, padd
 
     #image = np.array(image) / 255.0
     #ori_img = np.array(image)
-    processed_img = resnet_v2.preprocess_input(np.array(image))
-    processed_img = processed_img[None,:]
-    return processed_img
+    #processed_img = resnet_v2.preprocess_input(np.array(image))
+    #processed_img = processed_img[None,:]
+    return image
 
 """
 function to get the prediction from the model
@@ -535,7 +535,7 @@ def integrated_grad_PIL(PIL_img, target, lookup = None):
     mapping_dict_rev = {val:key for key, val in mapping_dict.items()}
     
     ############################THIS LINE IS IMPORTANT!!!!#################################
-    PIL_img = resnet_v2.preprocess_input(np.array(PIL_img)[None,:]) ##IMPORTANT!!!
+    PIL_img = resnet_v2.preprocess_input(np.array(PIL_img)) ##IMPORTANT!!!
     output_prob = model.predict(PIL_img).squeeze()
     pred_idx = output_prob.argmax()
     

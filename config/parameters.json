@@ -1,11 +1,11 @@
 {
     "load_data":
     {
-        "train_label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_train.csv",
+        "train_label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/biased_race.csv",
         "train_image_path":  "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/train",
         "valid_label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_val.csv",
         "valid_image_path":  "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val",
-        "target": "race",
+        "target": "age",
         "size": 224
     },
     "model_param":
@@ -13,9 +13,9 @@
         "lr": 0.0008,
         "epochs": 300,
         "batch_size": 128,
-        "mapping_path": "./mapping/race.json",
-        "save_path": "./models/race/race_v6.hdf5",
-        "log_path": "./logs/race/race_v6.csv"
+        "mapping_path": "./mapping/age.json",
+        "save_path": "./models/age/age_v1_biased.hdf5",
+        "log_path": "./logs/age/age_v1_biased.csv"
     },
      "integrated_grad":
     {

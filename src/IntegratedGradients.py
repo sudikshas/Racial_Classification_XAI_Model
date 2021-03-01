@@ -106,6 +106,7 @@ class integrated_gradients:
         
         # If multiple inputs are present, feed them as list of np arrays. 
         if isinstance(sample, list):
+            print("list route")
             #If reference is present, reference and sample size need to be equal.
             if reference != False: 
                 assert len(sample) == len(reference)
@@ -120,6 +121,7 @@ class integrated_gradients:
         
         # Or you can feed just a single numpy arrray. 
         elif isinstance(sample, np.ndarray):
+            print("array route")
             _output = integrated_gradients.linearly_interpolate(sample, reference, num_steps)
             samples.append(_output[0])
             numsteps.append(_output[1])
@@ -134,6 +136,11 @@ class integrated_gradients:
         for s in samples:
             _input.append(s)
         _input.append(0)
+        
+        print("sample shape", sample.shape)
+        print("input length:", len(_input))
+        print("input type:", type(_input))
+        print("input shape:", _input[0].shape)
         
         if K.backend() == "tensorflow": 
             gradients = self.get_gradients[outc](_input)

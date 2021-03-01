@@ -1,2 +1,0 @@
-model_checkpoint_path: "gender_ckpt"
-all_model_checkpoint_paths: "gender_ckpt"
