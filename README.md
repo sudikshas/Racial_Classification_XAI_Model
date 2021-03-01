@@ -59,3 +59,13 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 [3]Sundararajan, Mukund, Ankur Taly, and Qiqi Yan. "Axiomatic attribution for deep networks." International Conference on Machine Learning. PMLR, 2017.
 
 [4]Integrated Gradients[Source code]. https://github.com/hiranumn/IntegratedGradients.
+
+[5]@inproceedings{karkkainenfairface,
+      title={FairFace: Face Attribute Dataset for Balanced Race, Gender, and Age for Bias Measurement and Mitigation},
+      author={Karkkainen, Kimmo and Joo, Jungseock},
+      booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+      year={2021},
+      pages={1548--1558}
+    }
+
+[6] FairFace: Face Attribute Dataset for Balanced Race, Gender, and Age[Source code]. https://github.com/dchen236/FairFace.
