@@ -53,6 +53,9 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 
 ### Reference
 [1]Selvaraju, Ramprasaath R., et al. "Grad-cam: Visual explanations from deep networks via gradient-based localization." Proceedings of the IEEE international conference on computer vision. 2017.
+
 [2]Grad-CAM implementation in Keras[Source code]. https://github.com/jacobgil/keras-grad-cam.
+
 [3]Sundararajan, Mukund, Ankur Taly, and Qiqi Yan. "Axiomatic attribution for deep networks." International Conference on Machine Learning. PMLR, 2017.
+
 [4]Integrated Gradients[Source code]. https://github.com/hiranumn/IntegratedGradients.
