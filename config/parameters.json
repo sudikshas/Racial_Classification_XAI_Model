@@ -1,0 +1,47 @@
+{
+    "load_data":
+    {
+        "train_label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/biased_race.csv",
+        "train_image_path":  "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/train",
+        "valid_label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_val.csv",
+        "valid_image_path":  "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val",
+        "target": "age",
+        "size": 224
+    },
+    "model_param":
+    {
+        "lr": 0.0008,
+        "epochs": 300,
+        "batch_size": 128,
+        "mapping_path": "./mapping/age.json",
+        "save_path": "./models/age/age_v1_biased.hdf5",
+        "log_path": "./logs/age/age_v1_biased.csv"
+    },
+     "integrated_grad":
+    {
+        "model_param_path": "./models/race/race_v6.hdf5",
+        "image_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val",
+        "label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_val.csv",
+        "save_path": "./visualization/race/integrated_grad",
+        "target":"race",
+        "mapping": "./mapping/race.json",
+        "size": 224,
+        "img_idx_lst": [1,2,3,4,5,6,7]
+    },
+    "generate_stats":
+    {
+        "log_path": "./logs/race/race_v6.csv", 
+        "label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_val.csv",
+        "image_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val",
+        "target": "race",
+        "save_path": "./visualization/race_biased/stats",
+        "model_path": "./models/race/race_biased_v1.hdf5"
+    },
+    "run_your_img":
+    {
+        "image_path": "./test.jpg",
+        "target":"race",
+        "mapping": "./mapping/race.json",
+        "to_save": "True"
+    }
+}
