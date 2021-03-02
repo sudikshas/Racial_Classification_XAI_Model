@@ -256,7 +256,7 @@ input
 output
     an numpy array of an image that has been processed using the resnetv2.preprocess_input
 """
-def detect_face(image_path, im_size = 224, default_max_size=800,size = 300, padding = 0.25):
+def detect_face(image_path, im_size = 224, default_max_size=800,size = 300, padding = 0.25, to_save = False):
     cnn_face_detector = dlib.cnn_face_detection_model_v1('./models/dlib_mod/mmod_human_face_detector.dat')
     sp = dlib.shape_predictor('./models/dlib_mod/shape_predictor_5_face_landmarks.dat')
     base = 2000  # largest width and height
@@ -286,6 +286,8 @@ def detect_face(image_path, im_size = 224, default_max_size=800,size = 300, padd
     image = Image.fromarray(image, 'RGB')
     image = image.resize((im_size, im_size))
 
+    if to_save:
+        image.save("./face.png")
     #image = np.array(image) / 255.0
     #ori_img = np.array(image)
     #processed_img = resnet_v2.preprocess_input(np.array(image))
@@ -562,7 +564,7 @@ input
 output
     a single image of object PIL.PngImagePlugin.PngImageFile
 """
-def integrated_grad_PIL(PIL_img, target, lookup = None):
+def integrated_grad_PIL(PIL_img, target, lookup = None, to_save = False):
     if target == "race":
         model_path = "./models/race/race_v6.hdf5"
     elif target == "age":
@@ -582,7 +584,7 @@ def integrated_grad_PIL(PIL_img, target, lookup = None):
     mapping_dict_rev = {val:key for key, val in mapping_dict.items()}
     
     ############################THIS LINE IS IMPORTANT!!!!#################################
-    PIL_img = resnet_v2.preprocess_input(np.array(PIL_img)) ##IMPORTANT!!!
+    PIL_img = resnet_v2.preprocess_input(np.array(PIL_img)[None, :]) ##IMPORTANT!!!
     output_prob = model.predict(PIL_img).squeeze()
     pred_idx = output_prob.argmax()
     
@@ -600,6 +602,9 @@ def integrated_grad_PIL(PIL_img, target, lookup = None):
     plt.imshow(ex[:,:,0], cmap="seismic", vmin=-1*th, vmax=th)
     plt.title("heatmap for {} {} with probability {:.2f}".format(target, mapping_dict_rev[pred_idx],
                                                                  output_prob[pred_idx]), fontsize=12)
+    
+    if to_save:
+        plt.savefig("./ig.png")
     
     fig = plt.gcf()
     im = fig2img(fig)

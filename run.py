@@ -23,6 +23,7 @@ if __name__ == '__main__':
     data_info = data["load_data"]
     generate_stats = data["generate_stats"]
     integrated_grad = data["integrated_grad"]
+    run_your_img = data["run_your_img"]
 
     #Train model
     if "train_model" in targets:
@@ -83,6 +84,14 @@ if __name__ == '__main__':
     #integrated-gradient
     if "integrate_grad" in targets:
         integrated_grad_pic(**integrated_grad)
+    
+    #test your own image
+    if "run_pic" in targets:
+        image_path, target, mapping, to_save = run_your_img.values()
+        to_save = bool(to_save)
+        face_img = detect_face(image_path, to_save = to_save)
+        integrated_grad_PIL(face_img, target, to_save = to_save)
+        
 
 
     

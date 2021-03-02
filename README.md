@@ -30,7 +30,7 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 * contains statistics and integrated-gradient visualization samples.
 
 ##### test_data
-* Contains sample data to run just for the purpose of demo.
+* Contains sample data from FairFace Dataset.
 
 ### How to run the code
 1. please pull the my docker image: `michael459165/capstone2:new8` and run the code inside this container.
@@ -39,17 +39,10 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 4. visit the "integrated_grad" in the config file and customize your own parameters. Type `python run.py integrated_grad` to generate the activation maps of your model.
 5. visit the "generate_stats in the config file and customize your own parameters. Type `python run.py generate_plots` to generate statistics and plots.
 
-### Testing the script
-1. `python run.py test` will train a model with a very small dataset. This just serves as a simple demo to run
-2. `python integrated_grad.py test` will create a integrated-grad pictures in the test_data/integrated_grad folder
+### How to generate Integrated-gradient result
+1. If you want to run integrated-gradient on sample images, please change the variables from the integrated_grad section of parameters.json file. Then, do `python run.py integrate_grad`.
+2. If you want to run integrated-gradient with your own image, please change the variables from the run_your_img section of parameters.json file. Then, do `python integrated_grad.py run_pic`. 
 
-
-### Moving forward
-* Add the grad-cam algorithm from Sudiksha's repo for generating grad-cam activation maps.
-* Calculate the mean activation maps for each category of a particular class (e.g. the mean "White" activation map from race class).
-* Train a model with a biased dataset.
-* Implement face detction algorithm with dlib and resize the image to 224x224x3 that matches the input shape of our trained models.
-* Develop back-end tool to connect the model with the Web App that will serve as our final product.
 
 ### Reference
 [1]Selvaraju, Ramprasaath R., et al. "Grad-cam: Visual explanations from deep networks via gradient-based localization." Proceedings of the IEEE international conference on computer vision. 2017.

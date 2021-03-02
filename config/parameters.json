@@ -36,5 +36,12 @@
         "target": "race",
         "save_path": "./visualization/race_biased/stats",
         "model_path": "./models/race/race_biased_v1.hdf5"
+    },
+    "run_your_img":
+    {
+        "image_path": "./test.jpg",
+        "target":"race",
+        "mapping": "./mapping/race.json",
+        "to_save": "True"
     }
 }
