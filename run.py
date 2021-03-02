@@ -10,6 +10,8 @@ from training import *
 import json
 from tensorflow.keras.applications import resnet_v2
 import pandas as pd
+from tensorflow import keras
+import PIL.Image as Image
 
 if __name__ == '__main__':
     
@@ -23,7 +25,8 @@ if __name__ == '__main__':
     data_info = data["load_data"]
     generate_stats = data["generate_stats"]
     integrated_grad = data["integrated_grad"]
-    run_your_img = data["run_your_img"]
+    run_test = data["run_test"]
+    run_custom_img = data["run_custom_img"]
 
     #Train model
     if "train_model" in targets:
@@ -56,7 +59,8 @@ if __name__ == '__main__':
         #print("number of training data:", len(train_gen) * batch_size)
         #print("number of validation data:", len(valid_gen) * batch_size)
 
-        model = build_model(num_classes = num_classes)
+        #model = build_model(num_classes = num_classes)
+        model = build_model_light(num_classes = num_classes)
 
         print(model.summary())
 
@@ -85,12 +89,20 @@ if __name__ == '__main__':
     if "integrate_grad" in targets:
         integrated_grad_pic(**integrated_grad)
     
+    #run on test sample
+    if "run_test" in targets:
+        image_path, target, to_save = run_test.values()
+        face_img = Image.open(image_path)
+        ig = integrated_grad_PIL(face_img, target, to_save = to_save)
+        gradcam, guided = grad_cam(face_img, target, to_save = to_save)
+        
     #test your own image
-    if "run_pic" in targets:
-        image_path, target, mapping, to_save = run_your_img.values()
+    if "run_custom_img" in targets:
+        image_path, target, to_save = run_custom_img.values()
         to_save = bool(to_save)
         face_img = detect_face(image_path, to_save = to_save)
-        integrated_grad_PIL(face_img, target, to_save = to_save)
+        ig = integrated_grad_PIL(face_img, target, to_save = to_save)
+        gradcam, guided = grad_cam(face_img, target, to_save = to_save)
         
 
 

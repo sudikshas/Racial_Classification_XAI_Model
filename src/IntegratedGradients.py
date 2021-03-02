@@ -15,7 +15,6 @@ import sys
 import tensorflow.keras.backend as K
 from tensorflow.keras.models import Model, Sequential
 import tensorflow as tf
-tf.compat.v1.disable_eager_execution()
 
 '''
 Integrated gradients approximates Shapley values by integrating partial
