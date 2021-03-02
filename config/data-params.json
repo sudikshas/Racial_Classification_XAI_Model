@@ -1,7 +1,0 @@
-{
-    "fairface_label_train": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_train.csv",
-    "fairface_label_val": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_label_val.csv",
-    "fairface_pad025": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad025",
-    "fairface_pad125": "/teams/DSC180A_FA20_A00/a01capstonegroup03/fairface_pad125",
-    "outdir": "data/raw"
-}
