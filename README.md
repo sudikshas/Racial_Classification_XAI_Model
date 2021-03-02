@@ -1,4 +1,5 @@
 # Racial_Classification_XAI_Model
+<<<<<<< HEAD
 
 Website: https://michael4706.github.io/XAI_Website/
 
@@ -62,3 +63,5 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
     }
 
 [6] FairFace: Face Attribute Dataset for Balanced Race, Gender, and Age[Source code]. https://github.com/dchen236/FairFace.
+=======
+>>>>>>> bbceacc3fb95d4a2c1a16408e215b3032b5d3754
