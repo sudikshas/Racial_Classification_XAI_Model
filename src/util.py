@@ -569,7 +569,8 @@ output
 """
 def integrated_grad_PIL(PIL_img, target, lookup = None, to_save = False):
     if target == "race":
-        model_path = "./models/race/race_v6.hdf5"
+        #model_path = "./models/race/race_v6.hdf5"
+        model_path = "./models/race/race_biased_v1.hdf5"
     elif target == "age":
         model_path = "./models/age/age_v1.hdf5"
     else:
@@ -708,13 +709,12 @@ def grad_cam(PIL_img, target, lookup = None, to_save = False):
     gradcam = saliency[0] * heatmap[..., np.newaxis]
     guided = deprocess_image(gradcam)
  
+    if to_save:
+        cv2.imwrite("grad_cam" + ".jpg", cam)
+        cv2.imwrite("guided_cam" + ".jpg", guided)
+        
     cam = Image.fromarray(cam)
     guided = Image.fromarray(guided)
-    
-    
-    if to_save:
-        cam.save("./grad_cam.png")
-        guided.save("./guided_cam.png")
         
     return cam, guided
 

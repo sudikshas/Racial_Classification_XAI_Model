@@ -5,13 +5,14 @@ import numpy as np
 from tensorflow.keras.optimizers import Adam
 from model_trans import *
 from util import *
-from test_func import *
 from training import *
 import json
 from tensorflow.keras.applications import resnet_v2
 import pandas as pd
 from tensorflow import keras
+from tensorflow.keras.models import load_model
 import PIL.Image as Image
+tf.compat.v1.disable_eager_execution()
 
 if __name__ == '__main__':
     
@@ -56,11 +57,8 @@ if __name__ == '__main__':
                                      resnet_v2.preprocess_input, 
                                      is_training = False)
 
-        #print("number of training data:", len(train_gen) * batch_size)
-        #print("number of validation data:", len(valid_gen) * batch_size)
-
-        #model = build_model(num_classes = num_classes)
-        model = build_model_light(num_classes = num_classes)
+        model = build_model(num_classes = num_classes)
+        #model = build_model_light(num_classes = num_classes)
 
         print(model.summary())
 
@@ -69,7 +67,8 @@ if __name__ == '__main__':
     #generate statistics
     if "generate_plots" in targets:
         log_path, label_path, image_path, target, save_path, model_path = generate_stats.values()
-        model = keras.models.load_model(model_path)
+        model = load_model(model_path)
+        print("model loaded")
         mapping_path = os.path.join("./mapping", target + ".json")
 
         generator = create_generator(label_path,

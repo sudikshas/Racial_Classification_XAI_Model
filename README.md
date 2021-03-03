@@ -1,5 +1,7 @@
 # Racial_Classification_XAI_Model
 
+keyword: Deep Learning, Convolutional Neural Network, Integrated-Gradient, Grad-CAM, Web Application
+
 Website: https://michael4706.github.io/XAI_Website/
 
 ### Introduction
@@ -34,15 +36,17 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 
 ### How to run the code
 1. please pull the my docker image: `michael459165/capstone2:new8` and run the code inside this container.
-2. please go to the config file to change the parameters. This file has 4 sections, each corresponds to the parameters of a particular task.
-3. visit "load_data" and "model_param" in the config file and customize your own parameters. Type `python run.py train_model` to train your model.
-4. visit the "integrated_grad" in the config file and customize your own parameters. Type `python run.py integrated_grad` to generate the activation maps of your model.
-5. visit the "generate_stats in the config file and customize your own parameters. Type `python run.py generate_plots` to generate statistics and plots.
+2. please go to the config file to change the parameters. This file has 6 sections, each corresponds to a set of parameters to execute a particular task.
+3. Type `python run.py train_model` to train your model.
+4. Type `python run.py integrated_grad` to generate multiple heatmaps for Integrated Gradient on test samples. This version of Integrated Gradient will generate heatmaps for ALL classes.
+5. Type `python run.py run_test` to generate just ONE heatmap for both Integrated Gradient and Grad-CAM on the test sample. This will generate the heatmaps of the class with the HIGHEST predictive probability.
+6. Type `python run.py run_custom_img` to generate just ONE heatmap for both Integrated Gradient and Grad-CAM on YOUR own image. This will generate the heatmaps of the class with the HIGHEST predictive probability.
+7. Type `python run.py generate_plots` to generate statistics and plots.
 
-### How to generate Integrated-gradient result
-1. If you want to run integrated-gradient on sample images, please change the variables from the integrated_grad section of parameters.json file. Then, do `python run.py integrate_grad`.
-2. If you want to run integrated-gradient with your own image, please change the variables from the run_your_img section of parameters.json file. Then, do `python integrated_grad.py run_pic`. 
+Note: If you want to generate heatmap with different models, please visit util.py file under src folder and find the corresponding function and modify the model path. All the functions in util.py are well documented. Please feel free to explore and modify the code!
 
+### Web Application
+* We also made a Web App to showcase our work. Please clone [this repository](https://github.com/nicole9925/facial-analysis-webapp) and follow the instruction to run it locally. If you want to deploy the Web App online, please visit [backend](https://github.com/nicole9925/facial-analysis-frontend) and [frontend](https://github.com/nicole9925/facial-analysis-backend) repositories for further instruction. 
 
 ### Reference
 [1]Selvaraju, Ramprasaath R., et al. "Grad-cam: Visual explanations from deep networks via gradient-based localization." Proceedings of the IEEE international conference on computer vision. 2017.
