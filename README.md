@@ -41,7 +41,7 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 4. Type `python run.py integrated_grad` to generate multiple heatmaps for Integrated Gradient on test samples. This version of Integrated Gradient will generate heatmaps for ALL classes.
 5. Type `python run.py run_test` to generate just ONE heatmap for both Integrated Gradient and Grad-CAM on the test sample. This will generate the heatmaps of the class with the HIGHEST predictive probability.
 6. Type `python run.py run_custom_img` to generate just ONE heatmap for both Integrated Gradient and Grad-CAM on YOUR own image. This will generate the heatmaps of the class with the HIGHEST predictive probability.
-7. Type `python run.py generate_plots` to generate statistics and plots.
+7. Type `python run.py generate_stats` to generate statistics and plots.
 
 Note: If you want to generate heatmap with different models, please visit util.py file under src folder and find the corresponding function and modify the model path. All the functions in util.py are well documented. Please feel free to explore and modify the code!
 

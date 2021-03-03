@@ -65,7 +65,7 @@ if __name__ == '__main__':
         training(model, train_gen, valid_gen, lr, epochs, save_path, log_path)
     
     #generate statistics
-    if "generate_plots" in targets:
+    if "generate_stats" in targets:
         log_path, label_path, image_path, target, save_path, model_path = generate_stats.values()
         model = load_model(model_path)
         print("model loaded")
