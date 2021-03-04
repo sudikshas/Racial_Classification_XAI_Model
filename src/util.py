@@ -616,6 +616,91 @@ def integrated_grad_PIL(PIL_img, target, lookup = None, to_save = False):
     return im
 
 """
+Another version of integrated_grad implementation that shows the heatmap with the highest
+predictive accuracy(according to the fair model) for BOTH fair and biased models
+
+NOTE: Before running this, Make sure you:
+    1. Called Detect_face to crop the image only(WITHOUT USING Resnet Preprocessing)
+    2. You should call resnet preprocessing unit INSIDE this function because
+       the PIL.fromarray CANNOT take in float32 data type
+       
+   ALSO: Make sure you'd changed the model path and mapping path so that the function can run.
+
+input 
+    PIL_img: a PIL_img object PIL.Image.Image
+    
+    target: the target(e.g. race, age, gender)
+    
+    lookup: The particular category to lookup. For instance, given target = race, lookup = None
+            would display the heatmap with the highest probability. But if lookup = "white",
+            the function would display the heatmap with "white" category even if the category
+            does have have the highest probability.
+   
+output
+    a single image of object PIL.PngImagePlugin.PngImageFile
+"""
+def integrated_grad_PIL_v2(PIL_img, target, lookup = None, to_save = False):
+    if target == "race":
+        #model_path = "./models/race/race_v6.hdf5"
+        model_path = "./models/race/race_v1.hdf5"
+        biased_model_path = "./models/race/race_biased_v1.hdf5"
+    elif target == "age":
+        model_path = "./models/age/age_v1.hdf5"
+        biased_model_path = "./models/age/age_biased_v1.hdf5"
+    else:
+        model_path = "./models/gender/gender_v1.hdf5"
+        biased_model_path = "./models/gender/gender_biased_v1.hdf5"
+
+    model = keras.models.load_model(model_path)
+    model_biased = keras.models.load_model(biased_model_path)
+    ig = integrated_gradients(model)
+    ig_biased = integrated_gradients(model_biased)
+
+    mapping = os.path.join("./mapping", target + ".json")
+    with open(mapping) as f:
+        mapping_dict = json.load(f)
+    f.close()
+
+    mapping_dict = {key.lower():val for key, val in mapping_dict.items()}
+    mapping_dict_rev = {val:key for key, val in mapping_dict.items()}
+    
+    ############################THIS LINE IS IMPORTANT!!!!#################################
+    PIL_img = resnet_v2.preprocess_input(np.array(PIL_img)[None, :]) ##IMPORTANT!!!
+    
+    output_prob = model.predict(PIL_img).squeeze()
+    output_prob_biased = model_biased.predict(PIL_img).squeeze()
+    pred_idx = output_prob.argmax()
+    
+    if lookup == None:
+        pass
+    else:
+        lookup = lookup.lower()
+        pred_idx = mapping_dict[lookup]
+
+    ex = ig.explain(PIL_img.squeeze(), outc=pred_idx)
+    ex_biased = ig_biased.explain(PIL_img.squeeze(), outc=pred_idx)
+    
+    th = max(np.abs(np.min(np.concatenate([ex, ex_biased]))), np.abs(np.max(np.concatenate([ex, ex_biased]))))
+
+    plt.subplots(1, 2, figsize = (10, 10))
+    plt.subplot(1,2,1)
+    plt.imshow(ex[:,:,0], cmap="seismic", vmin=-1*th, vmax=th)
+    plt.title("heatmap for {} {} with probability {:.2f}".format(target, mapping_dict_rev[pred_idx],
+                                                                 output_prob[pred_idx]), fontsize=12)
+    plt.subplot(1,2,2)
+    plt.imshow(ex_biased[:,:,0], cmap="seismic", vmin=-1*th, vmax=th)
+    plt.title("heatmap for {} {} with probability {:.2f}".format(target, mapping_dict_rev[pred_idx],
+                                                                 output_prob_biased[pred_idx]), fontsize=12)
+    
+    if to_save:
+        plt.savefig("./ig.png")
+    
+    fig = plt.gcf()
+    im = fig2img(fig)
+
+    return im
+
+"""
 grad_cam function that converts a PIL image to grad_cam heatmap
 
 input 
@@ -636,11 +721,12 @@ output
 def grad_cam(PIL_img, target, lookup = None, to_save = False):
     #loading models and params
     if target == "race":
-        model_path = "./models/race/race_v6.hdf5"
+        model_path = "./models/race/race_v1.hdf5"
     elif target == "age":
         model_path = "./models/age/age_v1.hdf5"
     else:
-        model_path = "./models/gender/gender_v6.hdf5"
+        model_path = "./models/gender/gender_v1.hdf5"
+
     
     model = load_model(model_path)
     nb_classes = model.output.shape[1]
@@ -741,13 +827,13 @@ def grad_cam_normalized(PIL_img, target, lookup = None, to_save = False):
     
     #loading models and params
     if target == "race":
-        model_path = "./models/race/race_v6.hdf5"
+        model_path = "./models/race/race_v1.hdf5"
         model_path_biased = "./models/race/race_biased_v1.hdf5"
     elif target == "age":
         model_path = "./models/age/age_v1.hdf5"
         model_path_biased = "./models/age/age_biased_v1.hdf5"
     else:
-        model_path = "./models/gender/gender_v6.hdf5"
+        model_path = "./models/gender/gender_v1.hdf5"
         model_path_biased = "./models/gender/gender_biased_v1.hdf5"
         
     model = load_model(model_path)
