@@ -554,7 +554,11 @@ NOTE: Before running this, Make sure you:
        
    ALSO: Make sure you'd changed the model path and mapping path so that the function can run.
 
-input 
+input
+    model_path: The path to the model
+    
+    mapping: The dictionary that maps the class labels to numeric
+    
     PIL_img: a PIL_img object PIL.Image.Image
     
     target: the target(e.g. race, age, gender)
@@ -567,23 +571,14 @@ input
 output
     a single image of object PIL.PngImagePlugin.PngImageFile
 """
-def integrated_grad_PIL(PIL_img, target, lookup = None, to_save = False):
-    if target == "race":
-        #model_path = "./models/race/race_v6.hdf5"
-        model_path = "./models/race/race_biased_v1.hdf5"
-    elif target == "age":
-        model_path = "./models/age/age_v1.hdf5"
-    else:
-        model_path = "./models/gender/gender_v1.hdf5"
-        
+def integrated_grad_PIL(model_path, mapping, PIL_img, lookup = None, to_save = False):    
+    
     model = keras.models.load_model(model_path)
     ig = integrated_gradients(model)
-
-    mapping = os.path.join("./mapping", target + ".json")
     with open(mapping) as f:
         mapping_dict = json.load(f)
     f.close()
-
+    
     mapping_dict = {key.lower():val for key, val in mapping_dict.items()}
     mapping_dict_rev = {val:key for key, val in mapping_dict.items()}
     
@@ -604,7 +599,7 @@ def integrated_grad_PIL(PIL_img, target, lookup = None, to_save = False):
 
     plt.figure(figsize = (6, 6))
     plt.imshow(ex[:,:,0], cmap="seismic", vmin=-1*th, vmax=th)
-    plt.title("heatmap for {} {} with probability {:.2f}".format(target, mapping_dict_rev[pred_idx],
+    plt.title("heatmap for {} with probability {:.2f}".format(mapping_dict_rev[pred_idx],
                                                                  output_prob[pred_idx]), fontsize=12)
     
     if to_save:
@@ -626,7 +621,13 @@ NOTE: Before running this, Make sure you:
        
    ALSO: Make sure you'd changed the model path and mapping path so that the function can run.
 
-input 
+input
+    model_path: The path to the fair model
+    
+    biased_model_path: The path to the biased model
+    
+    mapping: The dictionary that maps the class labels to numeric
+    
     PIL_img: a PIL_img object PIL.Image.Image
     
     target: the target(e.g. race, age, gender)
@@ -639,24 +640,13 @@ input
 output
     a single image of object PIL.PngImagePlugin.PngImageFile
 """
-def integrated_grad_PIL_v2(PIL_img, target, lookup = None, to_save = False):
-    if target == "race":
-        #model_path = "./models/race/race_v6.hdf5"
-        model_path = "./models/race/race_v1.hdf5"
-        biased_model_path = "./models/race/race_biased_v1.hdf5"
-    elif target == "age":
-        model_path = "./models/age/age_v1.hdf5"
-        biased_model_path = "./models/age/age_biased_v1.hdf5"
-    else:
-        model_path = "./models/gender/gender_v1.hdf5"
-        biased_model_path = "./models/gender/gender_biased_v1.hdf5"
+def integrated_grad_PIL_v2(model_path, biased_model_path, mapping, PIL_img, target, lookup = None, to_save = False):
 
     model = keras.models.load_model(model_path)
     model_biased = keras.models.load_model(biased_model_path)
     ig = integrated_gradients(model)
     ig_biased = integrated_gradients(model_biased)
 
-    mapping = os.path.join("./mapping", target + ".json")
     with open(mapping) as f:
         mapping_dict = json.load(f)
     f.close()
@@ -704,6 +694,10 @@ def integrated_grad_PIL_v2(PIL_img, target, lookup = None, to_save = False):
 grad_cam function that converts a PIL image to grad_cam heatmap
 
 input 
+    model_path: The path to the model
+    
+    mapping: The dictionary that maps the class labels to numeric
+    
     PIL_img: a PIL_img object PIL.Image.Image
     
     target: the target(e.g. race, age, gender)
@@ -718,21 +712,12 @@ input
 output
      two images of object PIL.PngImagePlugin.PngImageFile: grad_cam and guided_grad_cam
 """
-def grad_cam(PIL_img, target, lookup = None, to_save = False):
+def grad_cam(model_path, mapping, PIL_img, lookup = None, to_save = False):
     #loading models and params
-    if target == "race":
-        model_path = "./models/race/race_v1.hdf5"
-    elif target == "age":
-        model_path = "./models/age/age_v1.hdf5"
-    else:
-        model_path = "./models/gender/gender_v1.hdf5"
-
-    
     model = load_model(model_path)
     nb_classes = model.output.shape[1]
     
     #read the mapping
-    mapping = os.path.join("./mapping", target + ".json")
     with open(mapping) as f:
         mapping_dict = json.load(f)
     f.close()
@@ -809,6 +794,12 @@ def grad_cam(PIL_img, target, lookup = None, to_save = False):
 grad_cam function that converts a PIL image to NORMALIZED grad_cam heatmap
 
 input 
+    model_path: The path to the model
+    
+    biased_model_path: The path to the biased model
+    
+    mapping: The dictionary that maps the class labels to numeric
+    
     PIL_img: a PIL_img object PIL.Image.Image
     
     target: the target(e.g. race, age, gender)
@@ -818,31 +809,19 @@ input
             the function would display the heatmap with "white" category even if the category
             does have have the highest probability.
     
-    to_save: Whether or not to save the heatmap. If true, the heatmaps wil be saved in the current directory.
+    to_save: Whether or not to save the heatmap. If true, the heatmaps will be saved in the current directory.
    
 output
      two image of object PIL.PngImagePlugin.PngImageFile: normalized grad_cam from unbiased and biased model
 """
-def grad_cam_normalized(PIL_img, target, lookup = None, to_save = False):
-    
-    #loading models and params
-    if target == "race":
-        model_path = "./models/race/race_v1.hdf5"
-        model_path_biased = "./models/race/race_biased_v1.hdf5"
-    elif target == "age":
-        model_path = "./models/age/age_v1.hdf5"
-        model_path_biased = "./models/age/age_biased_v1.hdf5"
-    else:
-        model_path = "./models/gender/gender_v1.hdf5"
-        model_path_biased = "./models/gender/gender_biased_v1.hdf5"
-        
+def grad_cam_normalized(model_path, biased_model_path, mapping, PIL_img, target, lookup = None, to_save = False):
+     
     model = load_model(model_path)
     biased_model = load_model(model_path_biased)
 
     nb_classes = model.output.shape[1]
     
     #read the mapping
-    mapping = os.path.join("./mapping", target + ".json")
     with open(mapping) as f:
         mapping_dict = json.load(f)
     f.close()

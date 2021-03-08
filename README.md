@@ -16,37 +16,24 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 ##### src
 * folder that contains the source code.
 
-##### notebook
-* Contains development codes for our own use.
-
-##### mapping
-* the mapping of the class to number stored in .json file.
-
 ##### models
-* the trained models saved in .hdf5 format.
-
-##### logs
-* The training progress saved in .csv format.
-
-##### visualizations
-* contains statistics and integrated-gradient visualization samples.
+* Contained dlib_mod that helps to preprocess the images. You also recommend you to save your trained model here.
 
 ##### test_data
 * Contains sample data from FairFace Dataset.
 
 ### How to run the code
 1. please pull the my docker image: `michael459165/capstone2:new8` and run the code inside this container.
-2. please go to the config file to change the parameters. This file has 6 sections, each corresponds to a set of parameters to execute a particular task.
+2. please go to the config file to change the parameters. This file has 5 sections, each corresponds to a set of parameters to execute a particular task.
 3. Type `python run.py train_model` to train your model.
-4. Type `python run.py integrated_grad` to generate multiple heatmaps for Integrated Gradient on test samples. This version of Integrated Gradient will generate heatmaps for ALL classes.
+4. Type `python run.py generate_stats` to generate statistics and plots.
 5. Type `python run.py run_test` to generate just ONE heatmap for both Integrated Gradient and Grad-CAM on the test sample. This will generate the heatmaps of the class with the HIGHEST predictive probability.
 6. Type `python run.py run_custom_img` to generate just ONE heatmap for both Integrated Gradient and Grad-CAM on YOUR own image. This will generate the heatmaps of the class with the HIGHEST predictive probability.
-7. Type `python run.py generate_stats` to generate statistics and plots.
 
-Note: If you want to generate heatmap with different models, please visit util.py file under src folder and find the corresponding function and modify the model path. All the functions in util.py are well documented. Please feel free to explore and modify the code!
+Note: All the functions in util.py are well documented. Please feel free to explore and modify the code!
 
 ### Web Application
-* We also made a Web App to showcase our work. Please clone [this repository](https://github.com/nicole9925/facial-analysis-webapp) and follow the instruction to run it locally. If you want to deploy the Web App online, please visit [backend](https://github.com/nicole9925/facial-analysis-frontend) and [frontend](https://github.com/nicole9925/facial-analysis-backend) repositories for further instruction. 
+* We also made a Web App to showcase our work. Please clone [this repository](https://github.com/nicole9925/facial-analysis-webapp) and follow the instruction to run it locally. If you want to deploy the Web App online, please visit [frontend](https://github.com/nicole9925/facial-analysis-frontend) and [backend](https://github.com/nicole9925/facial-analysis-backend) repositories for further instruction. 
 
 ### Reference
 [1]Selvaraju, Ramprasaath R., et al. "Grad-cam: Visual explanations from deep networks via gradient-based localization." Proceedings of the IEEE international conference on computer vision. 2017.

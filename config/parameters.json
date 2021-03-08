@@ -5,7 +5,7 @@
         "train_image_path":  "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/train",
         "valid_label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_val.csv",
         "valid_image_path":  "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val",
-        "target": "gender",
+        "target": "race",
         "size": 224
     },
     "model_param":
@@ -13,40 +13,34 @@
         "lr": 0.0008,
         "epochs": 300,
         "batch_size": 128,
-        "mapping_path": "./mapping/gender.json",
-        "save_path": "./models/gender/gender_biased_v1.hdf5",
-        "log_path": "./logs/gender/gender_biased_v1.csv"
-    },
-     "integrated_grad":
-    {
-        "model_param_path": "./models/race/race_v6.hdf5",
-        "image_path": "./test_data/val",
-        "label_path": "./test_data/fairface_label_val.csv",
-        "save_path": "./visualization/race/integrated_grad",
-        "target":"race",
-        "mapping": "./mapping/race.json",
-        "size": 224,
-        "img_idx_lst": [1]
+        "mapping_path": "./race.json",
+        "save_directory": "./models",
+        "save_path": "./models/race_v1.hdf5",
+        "log_directory": "./logs",
+        "log_path": "./logs/race_v1.csv"
     },
     "generate_stats":
     {
-        "log_path": "./logs/age/age_biased_v1.csv", 
+        "log_path": "./logs/race_v1.csv", 
         "label_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_label_val.csv",
         "image_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val",
-        "target": "age",
-        "save_path": "./visualization/age_biased/stats",
-        "model_path": "./models/age/age_biased_v1.hdf5"
+        "target": "race",
+        "save_path": "./race_stats",
+        "model_path": "./models/race_v1.hdf5",
+        "mapping_path":"./race.json"
     },
     "run_test":
     {
-        "image_path": "/teams/DSC180A_FA20_A00/a01explainableai/a01capstonegroup03/fairface_pad025/val/1067.jpg",
-        "target": "race",
+        "model_path": "./models/race_v1.hdf5",
+        "mapping": "./race.json",
+        "image_path": "./test_data/val/1.jpg",
         "to_save": "True"
     },
     "run_custom_img":
     {
+        "model_path": "./models/race_v1.hdf5",
+        "mapping": "./race.json",
         "image_path": "./IMG_3531.jpg",
-        "target":"race",
         "to_save": "True"
     }
 }

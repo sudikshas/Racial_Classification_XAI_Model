@@ -23,18 +23,21 @@ if __name__ == '__main__':
     param.close()
     
     model_param = data["model_param"]
-    data_info = data["load_data"]
+    load_data = data["load_data"]
     generate_stats = data["generate_stats"]
-    integrated_grad = data["integrated_grad"]
     run_test = data["run_test"]
     run_custom_img = data["run_custom_img"]
 
     #Train model
     if "train_model" in targets:
 
-        lr, epochs, batch_size, mapping_path, save_path, log_path = model_param.values()
+        lr, epochs, batch_size, mapping_path, save_directory, save_path,log_directory, log_path = model_param.values()
+        if not os.path.exists(save_directory):
+            os.mkdir(save_directory)
+        if not os.path.exists(log_directory):
+            os.mkdir(log_directory)
 
-        train_label_path, train_image_path, valid_label_path, valid_image_path, target, size = data_info.values()
+        train_label_path, train_image_path, valid_label_path, valid_image_path, target, size = load_data.values()
 
         num_classes = pd.read_csv(valid_label_path)[target].nunique()
 
@@ -58,7 +61,6 @@ if __name__ == '__main__':
                                      is_training = False)
 
         model = build_model(num_classes = num_classes)
-        #model = build_model_light(num_classes = num_classes)
 
         print(model.summary())
 
@@ -66,11 +68,13 @@ if __name__ == '__main__':
     
     #generate statistics
     if "generate_stats" in targets:
-        log_path, label_path, image_path, target, save_path, model_path = generate_stats.values()
+        log_path, label_path, image_path, target, save_path, model_path, mapping_path = generate_stats.values()
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
+            
         model = load_model(model_path)
+        
         print("model loaded")
-        mapping_path = os.path.join("./mapping", target + ".json")
-
         generator = create_generator(label_path,
                                          image_path,
                                          target,
@@ -84,24 +88,20 @@ if __name__ == '__main__':
         generate_curves(log_path, save_path)
         create_stats(model, generator, target, label_path, mapping_path, save_path)
     
-    #integrated-gradient
-    if "integrate_grad" in targets:
-        integrated_grad_pic(**integrated_grad)
-    
     #run on test sample
     if "run_test" in targets:
-        image_path, target, to_save = run_test.values()
+        model_path, mapping, image_path, to_save = run_test.values()
         face_img = Image.open(image_path)
-        ig = integrated_grad_PIL(face_img, target, to_save = to_save)
-        gradcam, guided = grad_cam(face_img, target, to_save = to_save)
+        ig = integrated_grad_PIL(model_path, mapping, face_img, to_save = to_save)
+        gradcam, guided = grad_cam(model_path, mapping, face_img, to_save = to_save)
         
     #test your own image
     if "run_custom_img" in targets:
-        image_path, target, to_save = run_custom_img.values()
+        model_path, mapping, image_path, to_save = run_custom_img.values()
         to_save = bool(to_save)
         face_img = detect_face(image_path, to_save = to_save)
-        ig = integrated_grad_PIL(face_img, target, to_save = to_save)
-        gradcam, guided = grad_cam(face_img, target, to_save = to_save)
+        ig = integrated_grad_PIL(model_path, mapping, face_img, to_save = to_save)
+        gradcam, guided = grad_cam(model_path, mapping, face_img, to_save = to_save)
         
 
 
