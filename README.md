@@ -4,7 +4,7 @@ keyword: Deep Learning, Convolutional Neural Network, Integrated-Gradient, Grad-
 
 Website: https://michael4706.github.io/XAI_Website/
 
-Static Web app: this [demo](https://nicole9925.github.io/facial-analysis-frontend/) is our web application that runs sample image. Make sure you visit the [Web Application](https://michael4706.github.io/XAI_Website/webapp/) (or just click this link) to play with it. If you want to run the web application with your own image, please visit the Web Application section below and follow the intrusctions.
+Static Web app: this [demo](https://nicole9925.github.io/facial-analysis-frontend/) (once you clicked the demo, just press submit to run it) is our web application that runs sample image. Make sure you visit the [Web Application](https://michael4706.github.io/XAI_Website/webapp/) (or just click this link) to play with it. If you want to run the web application with your own image, please visit the Web Application section below and follow the intrusctions.
 
 
 ![sample result](sample_result.png)
