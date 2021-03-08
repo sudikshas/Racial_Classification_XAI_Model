@@ -54,6 +54,6 @@ We also made a Web App to showcase our work. Please clone [this repository](http
       pages={1548--1558}
     }
 
-[6] FairFace: Face Attribute Dataset for Balanced Race, Gender, and Age[Source code]. https://github.com/dchen236/FairFace.
+[6] FairFace: Face Attribute Dataset for Balanced Race, Gender, and Age[Source code].https://github.com/dchen236/FairFace.
 
 [7] Draelos, Rachel. “Grad-CAM: Visual Explanations from Deep Networks.” Glass Box, 29 May 2020. https://glassboxmedicine.com/2020/05/29/grad-cam-visual-explanations-from-deep-networks/#:~:text=Grad%2DCAM%20can%20be%20used%20for%20understanding%20a%20model's%20predictions,choice%20than%20Guided%20Grad%2DCAM.
