@@ -33,7 +33,7 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 Note: All the functions in util.py are well documented. Please feel free to explore and modify the code!
 
 ### Web Application
-* We also made a Web App to showcase our work. Please clone [this repository](https://github.com/nicole9925/facial-analysis-webapp) and follow the instruction to run it locally. If you want to deploy the Web App online, please visit [frontend](https://github.com/nicole9925/facial-analysis-frontend) and [backend](https://github.com/nicole9925/facial-analysis-backend) repositories for further instruction. 
+We also made a Web App to showcase our work. Please clone [this repository](https://github.com/nicole9925/facial-analysis-webapp) and follow the instruction to run it locally. If you want to deploy the Web App online, please visit [frontend](https://github.com/nicole9925/facial-analysis-frontend) and [backend](https://github.com/nicole9925/facial-analysis-backend) repositories for further instruction. 
 
 ### Reference
 [1]Selvaraju, Ramprasaath R., et al. "Grad-cam: Visual explanations from deep networks via gradient-based localization." Proceedings of the IEEE international conference on computer vision. 2017.
