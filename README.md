@@ -28,7 +28,7 @@ This project is about visualizing Convolutional Neural Network (CNN) with XAI te
 * Contains sample data from FairFace Dataset.
 
 ### How to run the code
-1. please pull the my docker image: `michael459165/capstone2:new8` and run the code inside this container.
+1. please the my docker image: `michael459165/capstone2:new8` and run the code inside this container.
 2. please go to the config file to change the parameters. This file has 5 sections, each corresponds to a set of parameters to execute a particular task.
 3. Type `python run.py train_model` to train your model.
 4. Type `python run.py generate_stats` to generate statistics and plots.
@@ -39,6 +39,9 @@ Note: All the functions in util.py are well documented. Please feel free to expl
 
 ### Web Application
 We also made a Web App to showcase our work. Please clone [this repository](https://github.com/nicole9925/facial-analysis-webapp) and follow the instruction to run it locally. If you want to deploy the Web App online, please visit [frontend](https://github.com/nicole9925/facial-analysis-frontend) and [backend](https://github.com/nicole9925/facial-analysis-backend) repositories for further instruction. 
+
+### More stuff you can do
+* If you don't want to train the model (because it takes a long time), then please visit the "temp" branch from this repository. There are trained models under the models folder and sample integrated-gradient results and statistics under the visualization folder. Please just download the files you need and run the code from this main branch. 
 
 ### Reference
 [1]Selvaraju, Ramprasaath R., et al. "Grad-cam: Visual explanations from deep networks via gradient-based localization." Proceedings of the IEEE international conference on computer vision. 2017.
